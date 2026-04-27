@@ -1,6 +1,7 @@
+import configs from '@/configs/config.js';
 import app from './src/app.js';
 
-const PORT = 3055;
+const PORT = configs.app.port;
 
 const server = app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
