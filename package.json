@@ -1,0 +1,30 @@
+{
+  "name": "ecommerce-be",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "pre-check": "biome check --write . && rimraf ./dist && tsc --noEmitOnError && tsc-alias",
+    "dev": "tsx watch --no-warnings --env-file=.env server.ts",
+    "build": "tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "compression": "^1.8.1",
+    "express": "^5.2.1",
+    "helmet": "^8.1.0",
+    "mongoose": "^9.5.0",
+    "morgan": "^1.10.1",
+    "typescript": "^6.0.3"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "@types/compression": "^1.8.1",
+    "@types/express": "^5.0.6",
+    "@types/morgan": "^1.9.10",
+    "tsx": "^4.21.0"
+  }
+}
