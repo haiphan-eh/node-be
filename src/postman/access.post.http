@@ -1,10 +1,9 @@
 @url_dev=http://localhost:3055/v1/api
-
+@x_api_key=1234567890
 ### sign up
 POST {{url_dev}}/shop/signup
 Content-Type: application/json
-x-api-key: 1234567890
-
+x-api-key: {{x_api_key}}
 {
     "name": "Shop TIPS",
     "email": "shoptipjs@gmail.com",
@@ -14,9 +13,31 @@ x-api-key: 1234567890
 ### login
 POST {{url_dev}}/shop/login
 Content-Type: application/json
-x-api-key: 1234567890
+x-api-key: {{x_api_key}}
 
 {
     "email": "shoptipjs@gmail.com",
     "password": "abc123"
 }
+
+### logout
+POST {{url_dev}}/shop/logout
+Content-Type: application/json
+x-api-key: {{x_api_key}}
+x-client-id: 69f0e91cebbd58bde59f00cc
+authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OWYwZTkxY2ViYmQ1OGJkZTU5ZjAwY2MiLCJlbWFpbCI6InNob3B0aXBqc0BnbWFpbC5jb20iLCJpYXQiOjE3NzczOTY1MDksImV4cCI6MTc3NzU2OTMwOX0.qxiOb72npJjBMysDr6davMwgytP1F1YP9Go9sGIJdZU
+
+{
+    "email": "shoptipjs@gmail.com",
+    "password": "abc123"
+}
+
+### refresh token
+POST {{url_dev}}/shop/refresh-token
+Content-Type: application/json
+x-api-key: {{x_api_key}}
+x-client-id: 69f0e91cebbd58bde59f00cc
+authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OWYwZTkxY2ViYmQ1OGJkZTU5ZjAwY2MiLCJlbWFpbCI6InNob3B0aXBqc0BnbWFpbC5jb20iLCJpYXQiOjE3Nzc0MDAyNTEsImV4cCI6MTc3NzU3MzA1MX0.6ABoZuYXKhvCbStx48nnV48H0-EGb5i5lHknQurkRJo
+x-refresh-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OWYwZTkxY2ViYmQ1OGJkZTU5ZjAwY2MiLCJlbWFpbCI6InNob3B0aXBqc0BnbWFpbC5jb20iLCJpYXQiOjE3Nzc0MDAyOTIsImV4cCI6MTc3ODAwNTA5Mn0.MAaB_tZwIRLLXXrL67MHPjGFJMA5ionwEd6vgfYD2jo
+
+{}

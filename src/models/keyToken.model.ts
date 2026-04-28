@@ -1,4 +1,4 @@
-import { type InferSchemaType, Schema, model } from 'mongoose';
+import { type InferSchemaType, Schema, type Types, model } from 'mongoose';
 
 // Constants for the schema
 const DOCUMENT_NAME = 'Key';
@@ -68,7 +68,7 @@ const schema = new Schema(
 
 // Interface for type safety
 type IKeyToken = InferSchemaType<typeof schema> & {
-  _id: string; // Adding _id field to the interface
+  _id: Types.ObjectId; // Adding _id field to the interface
 };
 // Create the model
 const keyTokenModel = model<InferSchemaType<typeof schema>>(DOCUMENT_NAME, schema);

@@ -6,22 +6,43 @@ export const createKeyToken = async ({
   privateKey,
   refreshToken,
 }: { userId: string; publicKey: string; privateKey: string; refreshToken?: string }) => {
-  try {
-    /*    const keyToken = await keyTokenModel.create({
+  /*    const keyToken = await keyTokenModel.create({
       user: userId,
       publicKey,
       privateKey,
     });
     return keyToken ? keyToken : null; */
 
-    const filter = { user: userId };
-    const update = { publicKey, privateKey, refreshTokensUsed: [], refreshToken };
-    const options = { upsert: true, new: true };
+  const filter = { user: userId };
+  const update = { publicKey, privateKey, refreshTokensUsed: [], refreshToken };
+  const options = { upsert: true, new: true };
 
-    const keyToken = await keyTokenModel.findOneAndUpdate(filter, update, options);
-    return keyToken ? keyToken : null;
-  } catch (error) {
-    console.error('Error creating/updating key token:', error);
-    return null;
-  }
+  return keyTokenModel.findOneAndUpdate(filter, update, options);
+};
+
+export const findByUserId = async (userId: string) => {
+  return keyTokenModel.findOne({ user: userId });
+};
+
+export const deleteKeyByUserId = async (userId: string) => {
+  return keyTokenModel.deleteOne({ user: userId });
+};
+
+export const findByRefreshTokenUsed = async (refreshToken: string) => {
+  return keyTokenModel.findOne({ refreshTokensUsed: refreshToken });
+};
+
+export const findByRefreshToken = async (refreshToken: string) => {
+  return keyTokenModel.findOne({ refreshToken });
+};
+
+export const updateKeyTokenUsed = async ({
+  newRefreshToken,
+  usedRefreshToken,
+}: { newRefreshToken: string; usedRefreshToken: string }) => {
+  return keyTokenModel.findOneAndUpdate(
+    { refreshToken: usedRefreshToken },
+    { $push: { refreshTokensUsed: usedRefreshToken }, $set: { refreshToken: newRefreshToken } },
+    { new: true },
+  );
 };

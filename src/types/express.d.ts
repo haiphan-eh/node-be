@@ -1,3 +1,6 @@
+import type { IKeyToken } from '@/models/keyToken.model.ts';
+import type { User } from '@/types/user.ts';
+
 declare global {
   namespace Express {
     interface Request {
@@ -6,9 +9,9 @@ declare global {
             permissions?: string[];
           }
         | any;
-      keyStore?: any;
+      keyStore?: IKeyToken;
+      user?: User;
+      refreshToken?: string;
     }
   }
 }
-
-export {};

@@ -7,10 +7,13 @@ import {
   timingSafeEqual,
 } from 'node:crypto';
 import { createTokenPair } from '@/auth/authUtils.js';
-import { AuthFailureError, BadRequestError } from '@/core/error.response.js';
+import { AuthFailureError, BadRequestError, ForbiddenError } from '@/core/error.response.js';
+import type { IKeyToken } from '@/models/keyToken.model.js';
 import { shopModel } from '@/models/shop.model.js';
 import { KeyTokenService, ShopService } from '@/services/index.js';
+import type { User } from '@/types/user.js';
 import { getInfoData } from '@/utils/index.js';
+import jwt from 'jsonwebtoken';
 
 const passwordService = {
   hash: (password: string) => {
@@ -86,6 +89,10 @@ export const login = async ({
   };
 };
 
+export const logout = async ({ userId }: { userId: string }) => {
+  const deleted = await KeyTokenService.deleteKeyByUserId(userId);
+  return deleted;
+};
 export const signUp = async ({ name, email, password }: { name: string; email: string; password: string }) => {
   const holderShop = await shopModel.findOne({ email }).lean();
   if (holderShop) {
@@ -113,18 +120,11 @@ export const signUp = async ({ name, email, password }: { name: string; email: s
 
     /* V2: simplified */
     const { privateKey, publicKey } = token();
-    const keyStore = await KeyTokenService.createKeyToken({
+    await KeyTokenService.createKeyToken({
       userId: newShop._id.toString(),
       publicKey,
       privateKey,
     });
-
-    if (!keyStore) {
-      return {
-        code: 500,
-        message: 'Error creating key token!',
-      };
-    }
 
     const tokens = await createTokenPair({
       payload: { userId: newShop._id.toString(), email },
@@ -133,7 +133,6 @@ export const signUp = async ({ name, email, password }: { name: string; email: s
     });
 
     return {
-      code: 201,
       metadata: {
         shop: getInfoData({ fields: ['_id', 'name', 'email'], object: newShop }),
         tokens,
@@ -143,5 +142,39 @@ export const signUp = async ({ name, email, password }: { name: string; email: s
   return {
     code: 201,
     message: 'Shop registered successfully!',
+  };
+};
+
+export const refreshToken = async ({
+  refreshToken,
+  user,
+  keyStore,
+}: { refreshToken: string; user: User; keyStore: IKeyToken }) => {
+  // Check if that refresh token was used or not
+  if (keyStore.refreshTokensUsed.includes(refreshToken)) {
+    await KeyTokenService.deleteKeyByUserId(user.userId);
+    throw new ForbiddenError('Refresh token was used!');
+  }
+
+  if (!keyStore.refreshToken || keyStore.refreshToken !== refreshToken) {
+    throw new ForbiddenError('Refresh token not found!');
+  }
+  const { userId, email } = user;
+  const foundShop = await ShopService.findByEmail({ email });
+  if (!foundShop) {
+    throw new BadRequestError('Shop not registered!');
+  }
+
+  const tokens = await createTokenPair({
+    payload: { userId, email },
+    publicKey: keyStore.publicKey,
+    privateKey: keyStore.privateKey,
+  });
+
+  await KeyTokenService.updateKeyTokenUsed({ newRefreshToken: tokens.refreshToken, usedRefreshToken: refreshToken });
+
+  return {
+    user: getInfoData({ fields: ['_id', 'name', 'email'], object: foundShop }),
+    tokens: { refreshToken: tokens.refreshToken },
   };
 };
