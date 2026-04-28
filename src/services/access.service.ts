@@ -7,6 +7,7 @@ import {
   timingSafeEqual,
 } from 'node:crypto';
 import { createTokenPair } from '@/auth/authUtils.js';
+import { BadRequestError } from '@/core/error.respose.js';
 import { shopModel } from '@/models/shop.model.js';
 import { KeyTokenService } from '@/services/index.js';
 import { getInfoData } from '@/utils/index.js';
@@ -28,23 +29,19 @@ const passwordService = () => {
 };
 
 export const signUp = async ({ name, email, password }: { name: string; email: string; password: string }) => {
-  try {
-    const holderShop = await shopModel.findOne({ email }).lean();
-    if (holderShop) {
-      return {
-        code: 400,
-        message: 'Shop already registered!',
-      };
-    }
+  const holderShop = await shopModel.findOne({ email }).lean();
+  if (holderShop) {
+    throw new BadRequestError('Shop already registered!');
+  }
 
-    const hashedPassword = passwordService().hash(password);
+  const hashedPassword = passwordService().hash(password);
 
-    const newShop = await shopModel.create({ name, email, password: hashedPassword, roles: ['SHOP'] });
+  const newShop = await shopModel.create({ name, email, password: hashedPassword, roles: ['SHOP'] });
 
-    if (newShop) {
-      // create privateKey and publicKey for the shop
-      /* V1: complex */
-      /*       const { privateKey, publicKey } = generateKeyPairSync('rsa', {
+  if (newShop) {
+    // create privateKey and publicKey for the shop
+    /* V1: complex */
+    /*       const { privateKey, publicKey } = generateKeyPairSync('rsa', {
         modulusLength: 4096,
         publicKeyEncoding: {
           type: 'pkcs1',
@@ -56,46 +53,39 @@ export const signUp = async ({ name, email, password }: { name: string; email: s
         },
       }); */
 
-      /* V2: simplified */
-      const privateKey = randomBytes(64).toString('hex');
-      const publicKey = randomBytes(64).toString('hex');
+    /* V2: simplified */
+    const privateKey = randomBytes(64).toString('hex');
+    const publicKey = randomBytes(64).toString('hex');
 
-      const keyStore = await KeyTokenService.createKeyToken({
-        userId: newShop._id.toString(),
-        publicKey,
-        privateKey,
-      });
+    const keyStore = await KeyTokenService.createKeyToken({
+      userId: newShop._id.toString(),
+      publicKey,
+      privateKey,
+    });
 
-      if (!keyStore) {
-        return {
-          code: 500,
-          message: 'Error creating key token!',
-        };
-      }
-
-      const tokens = await createTokenPair({
-        payload: { userId: newShop._id.toString(), email },
-        publicKey,
-        privateKey,
-      });
-
+    if (!keyStore) {
       return {
-        code: 201,
-        metadata: {
-          shop: getInfoData({ fields: ['_id', 'name', 'email'], object: newShop }),
-          tokens,
-        },
+        code: 500,
+        message: 'Error creating key token!',
       };
     }
+
+    const tokens = await createTokenPair({
+      payload: { userId: newShop._id.toString(), email },
+      publicKey,
+      privateKey,
+    });
+
     return {
       code: 201,
-      message: 'Shop registered successfully!',
-    };
-  } catch (error) {
-    console.error('Error during sign up:', error);
-    return {
-      code: 500,
-      message: 'Internal server error during sign up!',
+      metadata: {
+        shop: getInfoData({ fields: ['_id', 'name', 'email'], object: newShop }),
+        tokens,
+      },
     };
   }
+  return {
+    code: 201,
+    message: 'Shop registered successfully!',
+  };
 };

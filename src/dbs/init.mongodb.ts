@@ -11,7 +11,7 @@ class Database {
   }
 
   private async connect() {
-    if (configs.app.env === 'development') {
+    if (configs.app.env !== 'development') {
       mongooseCore.set('debug', true);
       mongooseCore.set('debug', { color: true });
     }
