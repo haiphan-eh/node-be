@@ -6,6 +6,6 @@ export const getInfoData = <T, K extends keyof T>({
 }: {
   fields: K[];
   object: T;
-}) => {
-  return pick(object, fields);
+}): Pick<T, K> => {
+  return pick(object, fields) as Pick<T, K>;
 };

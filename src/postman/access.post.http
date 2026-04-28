@@ -10,3 +10,13 @@ x-api-key: 1234567890
     "email": "shoptipjs@gmail.com",
     "password": "abc123"
 }
+
+### login
+POST {{url_dev}}/shop/login
+Content-Type: application/json
+x-api-key: 1234567890
+
+{
+    "email": "shoptipjs@gmail.com",
+    "password": "abc123"
+}

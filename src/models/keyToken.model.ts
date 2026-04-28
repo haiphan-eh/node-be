@@ -41,7 +41,7 @@ const schema = new Schema(
     user: {
       type: Schema.Types.ObjectId,
       required: true,
-      ref: 'Shop', // Reference to the Shop model
+      ref: 'Shop',
     },
     publicKey: {
       type: String,
@@ -52,6 +52,10 @@ const schema = new Schema(
       required: true,
     },
     refreshToken: {
+      type: String, // String to store the refresh token's using
+      required: true,
+    },
+    refreshTokensUsed: {
       type: [String], // Array of strings to store used refresh tokens
       default: [],
     },

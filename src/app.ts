@@ -1,7 +1,8 @@
+import type { ErrorResponse } from '@/core/error.response.js';
 import { checkOverload } from '@/helpers/check.connect.js';
 import router from '@/routers/index.js';
 import compression from 'compression';
-import express from 'express';
+import express, { type NextFunction, type Response } from 'express';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import dbInstance from './dbs/init.mongodb.js';
@@ -20,8 +21,9 @@ dbInstance;
 checkOverload();
 
 /* Handle Errors */
-app.use((error, req, res, next) => {
-  const statusCode = error.status || 500;
+app.use((error: ErrorResponse, _: unknown, res: Response, next: NextFunction) => {
+  const statusCode = error.statusCode || 500;
+  console.log('statusCode: ', error);
   return res.status(statusCode).json({
     status: 'error',
     code: statusCode,

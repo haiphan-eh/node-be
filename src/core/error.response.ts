@@ -1,7 +1,7 @@
 import { ReasonPhrases } from '@/utils/reasonPhrase.js';
 import { StatusCode } from '@/utils/statusCode.js';
 
-class ErrorResponse extends Error {
+export class ErrorResponse extends Error {
   constructor(
     message: string,
     public statusCode: number,
@@ -13,14 +13,14 @@ class ErrorResponse extends Error {
 }
 
 export class ConflictRequestError extends ErrorResponse {
-  constructor(message: string = ReasonPhrases.CONFLICT, statusCode: number = StatusCode.FORBIDDEN) {
+  constructor(message: string = ReasonPhrases.CONFLICT, statusCode: number = StatusCode.CONFLICT) {
     super(message, statusCode);
     this.name = 'ConflictRequestError';
   }
 }
 
 export class BadRequestError extends ErrorResponse {
-  constructor(message: string = ReasonPhrases.CONFLICT, statusCode: number = StatusCode.FORBIDDEN) {
+  constructor(message: string = ReasonPhrases.BAD_REQUEST, statusCode: number = StatusCode.BAD_REQUEST) {
     super(message, statusCode);
     this.name = 'BadRequestError';
   }

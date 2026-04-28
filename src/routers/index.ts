@@ -6,7 +6,7 @@ import accessRoutes from './access/index.js';
 const router = express.Router();
 
 /* Middlewares */
-// router.use(apiKey);
+router.use(apiKey);
 // router.use(permission('0000'));
 
 /* Routes */

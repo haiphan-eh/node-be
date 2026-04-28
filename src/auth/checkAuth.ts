@@ -1,3 +1,4 @@
+import { AuthFailureError } from '@/core/error.response.js';
 import type { IApiKey } from '@/models/apiKey.model.js';
 import { findById } from '@/services/apiKey.service.js';
 import type { NextFunction, Request, Response } from 'express';
@@ -8,33 +9,28 @@ const HEADER = {
 };
 
 export const apiKey = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const apiKey = req.headers[HEADER.API_KEY]?.toString();
-    if (!apiKey) {
-      return res.status(403).json({ message: 'Forbidden Error' });
-    }
-    // Check if the API key is valid
-    const objKey = await findById(apiKey);
-    if (!objKey) {
-      return res.status(401).json({ message: 'Invalid API key' });
-    }
-    req.objKey = objKey;
-    next();
-  } catch (error) {
-    console.log(error);
+  const apiKey = req.headers[HEADER.API_KEY]?.toString();
+  if (!apiKey) {
+    throw new AuthFailureError('Forbidden Error');
   }
+  const objKey = await findById(apiKey);
+  if (!objKey) {
+    throw new AuthFailureError('Invalid API key');
+  }
+  req.objKey = objKey;
+  next();
 };
 
 export const permission = (permission: IApiKey['permissions'][0]) => {
   return (req: Request, res: Response, next: NextFunction) => {
     if (!req.objKey.permissions) {
-      return res.status(403).json({ message: 'Permission denied' });
+      throw new AuthFailureError('Permission denied');
     }
 
     const validPermission = req.objKey.permissions.includes(permission);
 
     if (!validPermission) {
-      return res.status(403).json({ message: 'Permission denied' });
+      throw new AuthFailureError('Permission denied');
     }
     next();
   };
