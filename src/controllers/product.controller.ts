@@ -1,6 +1,6 @@
 import { BadRequestError } from '@/core/error.response.js';
 import { SuccessResponse } from '@/core/success.response.js';
-import type { ProductType } from '@/models/product.model.js';
+import type { IProduct, ProductType } from '@/models/product.model.js';
 import { ProductService } from '@/services/index.js';
 import type { Request, Response } from 'express';
 
@@ -49,6 +49,36 @@ export const getAllPublishedForShop = async (req: Request, res: Response) => {
       limit: Number(limit) || 60,
       offset: Number(offset) || 0,
     }),
+  }).send(res);
+};
+
+export const getAllProducts = async (req: Request, res: Response) => {
+  const { limit, page, sort, filter, select } = req.query as unknown as {
+    limit: number;
+    sort: string;
+    page: number;
+    filter: Record<string, any>;
+    select: (keyof IProduct)[];
+  };
+
+  new SuccessResponse({
+    message: 'Get list products successfully',
+    metadata: await ProductService.findAllProducts({ limit, page, sort, filter, select }),
+  }).send(res);
+};
+
+export const getProduct = async (req: Request, res: Response) => {
+  const { product_id } = req.params as unknown as {
+    product_id: string;
+  };
+
+  if (!product_id) {
+    throw new BadRequestError('Product ID is required');
+  }
+
+  new SuccessResponse({
+    message: 'Get product successfully',
+    metadata: (await ProductService.findProduct({ product_id })) ?? {},
   }).send(res);
 };
 

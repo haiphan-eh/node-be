@@ -25,16 +25,16 @@ x-client-id: {{clientId}}
 authorization: {{accessToken}}
 
 {
-    "product_name" : "New Jeans",
-    "product_description" : "High-quality denim jeans",
-    "product_price" : 50,
-    "product_type" : "Clothing",
+    "product_name" : "Laptop",
+    "product_description" : "High-performance laptop",
+    "product_price" : 1500,
+    "product_type" : "Electronics",
     "product_thumb" : "product_thumb",
     "product_quantity" : 5,
     "product_attributes" : {
-        "brand": "Levi s",
-        "size": "L",
-        "material": "Denim"
+        "manufacturer": "HP",
+        "model": "XPS 15",
+        "color": "Silver"
     }
 }
 
@@ -75,5 +75,15 @@ authorization: {{accessToken}}
 
 ### search product by user
 GET {{url_dev}}/product/search/keySearch?keySearch=high
+x-api-key: {{x_api_key}}
+x-client-id: {{clientId}}
+
+### get all products
+GET {{url_dev}}/product
+x-api-key: {{x_api_key}}
+x-client-id: {{clientId}}
+
+### get a product
+GET {{url_dev}}/product/69f33c5ff07aeb97d599861e
 x-api-key: {{x_api_key}}
 x-client-id: {{clientId}}

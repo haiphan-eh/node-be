@@ -1,5 +1,6 @@
 import { BadRequestError } from '@/core/error.response.js';
 import { productModel } from '@/models/product.model.js';
+import type { SortOrder } from 'mongoose';
 
 const queryProduct = async ({
   query,
@@ -28,6 +29,28 @@ export const findAllPublishedForShop = async ({
   limit = 60,
 }: { query: Record<string, any>; offset?: number; limit?: number }) => {
   return queryProduct({ query, offset, limit });
+};
+
+export const findAllProducts = async ({
+  sort,
+  filter,
+  limit,
+  page,
+  select,
+}: { limit: number; sort: string; page: number; filter: Record<string, any>; select: Record<string, any> }) => {
+  const skip = (page - 1) * limit;
+  const query = { ...filter };
+  const sortBy: Record<string, SortOrder> = sort === 'ctime' ? { _id: -1 } : { _id: 1 };
+
+  const products = await productModel.find(query).select(select).skip(skip).limit(limit).sort(sortBy).lean();
+
+  const total = await productModel.countDocuments(query);
+
+  return { products, total };
+};
+
+export const findProduct = async ({ product_id, unSelect }: { product_id: string; unSelect: Record<string, any> }) => {
+  return productModel.findById(product_id).select(unSelect) ?? {};
 };
 
 export const publishProductByShop = async ({

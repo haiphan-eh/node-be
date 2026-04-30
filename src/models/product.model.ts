@@ -105,7 +105,7 @@ const furnitureSchema = new Schema(
 );
 
 // Interface for type safety
-type IProduct = InferSchemaType<typeof productSchema> & {
+export type IProduct = InferSchemaType<typeof productSchema> & {
   _id: Types.ObjectId;
 };
 type IClothing = InferSchemaType<typeof clothingSchema> & {

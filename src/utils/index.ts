@@ -9,3 +9,7 @@ export const getInfoData = <T, K extends keyof T>({
 }): Pick<T, K> => {
   return pick(object, fields) as Pick<T, K>;
 };
+
+export const getSelectData = (select: string[] = [], value = 1) => {
+  return Object.fromEntries(select.map((el) => [el, value]));
+};

@@ -1,5 +1,6 @@
 import { BadRequestError } from '@/core/error.response.js';
 import {
+  type IProduct,
   type ProductItem,
   type ProductType,
   clothingModel,
@@ -8,6 +9,7 @@ import {
   productModel,
 } from '@/models/product.model.js';
 import { ProductRepository } from '@/services/repositories/index.js';
+import { getSelectData } from '@/utils/index.js';
 import type { Types } from 'mongoose';
 
 type ProductConstructor = new (payload: ProductItem) => Product;
@@ -67,6 +69,20 @@ export class ProductFactory {
   }: { product_shop: string; limit?: number; offset?: number }) {
     const query = { product_shop, isDraft: false };
     return ProductRepository.findAllPublishedForShop({ query, limit, offset });
+  }
+
+  static async findAllProducts({
+    sort = 'ctime',
+    filter = { isPublished: true },
+    limit = 60,
+    page = 1,
+    select = ['product_name', 'product_price', 'product_thumb', 'product_shop'],
+  }: { limit?: number; sort?: string; page?: number; filter?: Record<string, any>; select?: (keyof IProduct)[] }) {
+    return ProductRepository.findAllProducts({ filter, page, select: getSelectData(select), limit, sort });
+  }
+
+  static async findProduct({ product_id, unSelect = ['_id'] }: { product_id: string; unSelect?: (keyof IProduct)[] }) {
+    return ProductRepository.findProduct({ product_id, unSelect: getSelectData(unSelect, 0) });
   }
 }
 
