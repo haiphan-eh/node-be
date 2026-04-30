@@ -87,3 +87,18 @@ x-client-id: {{clientId}}
 GET {{url_dev}}/product/69f33c5ff07aeb97d599861e
 x-api-key: {{x_api_key}}
 x-client-id: {{clientId}}
+
+### update a product
+PATCH {{url_dev}}/product/69f33c5ff07aeb97d599861e
+Content-Type: application/json
+x-api-key: {{x_api_key}}
+x-client-id: {{clientId}}
+authorization: {{accessToken}}
+
+{
+   "product_name": "New Jeans 2",
+   "product_type": "Clothing",
+    "product_attributes": {
+      "color": "Levi ssssss"
+    }
+}

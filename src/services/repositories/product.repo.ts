@@ -1,6 +1,6 @@
 import { BadRequestError } from '@/core/error.response.js';
 import { productModel } from '@/models/product.model.js';
-import type { SortOrder } from 'mongoose';
+import type { Model, SortOrder } from 'mongoose';
 
 const queryProduct = async ({
   query,
@@ -51,6 +51,16 @@ export const findAllProducts = async ({
 
 export const findProduct = async ({ product_id, unSelect }: { product_id: string; unSelect: Record<string, any> }) => {
   return productModel.findById(product_id).select(unSelect) ?? {};
+};
+
+export const updateProductById = async ({
+  productId,
+  product_shop,
+  payload,
+  isNew,
+  model,
+}: { productId: string; product_shop: string; payload: Record<string, any>; isNew: boolean; model: Model<any> }) => {
+  return model.findByIdAndUpdate({ _id: productId, product_shop }, payload, { new: isNew });
 };
 
 export const publishProductByShop = async ({

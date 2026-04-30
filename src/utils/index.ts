@@ -13,3 +13,26 @@ export const getInfoData = <T, K extends keyof T>({
 export const getSelectData = (select: string[] = [], value = 1) => {
   return Object.fromEntries(select.map((el) => [el, value]));
 };
+
+export const updateNestedObjectParser = (obj: any): any => {
+  const final: Record<string, any> = {};
+
+  for (const key of Object.keys(obj)) {
+    // Remove undefined and null values
+    if (obj[key] === undefined || obj[key] === null) {
+      continue;
+    }
+
+    if (typeof obj[key] === 'object' && !Array.isArray(obj[key]) && obj[key] !== null) {
+      const nestedResponse = updateNestedObjectParser(obj[key]);
+
+      for (const nestedKey of Object.keys(nestedResponse)) {
+        final[`${key}.${nestedKey}`] = nestedResponse[nestedKey];
+      }
+    } else {
+      final[key] = obj[key];
+    }
+  }
+
+  return final;
+};

@@ -9,7 +9,7 @@ import {
   productModel,
 } from '@/models/product.model.js';
 import { ProductRepository } from '@/services/repositories/index.js';
-import { getSelectData } from '@/utils/index.js';
+import { getSelectData, updateNestedObjectParser } from '@/utils/index.js';
 import type { Types } from 'mongoose';
 
 type ProductConstructor = new (payload: ProductItem) => Product;
@@ -29,6 +29,23 @@ export class ProductFactory {
     }
 
     return new productClass(payload).createProduct();
+  }
+
+  static async updateProduct({
+    type,
+    payload,
+    product_shop,
+    productId,
+  }: { type: ProductType; payload: ProductItem; product_shop: string; productId: string }) {
+    const productClass = ProductFactory.productRegistry[type];
+
+    if (!productClass) {
+      throw new BadRequestError(`Unsupported product type: ${type}`);
+    }
+
+    const cleanData = updateNestedObjectParser(payload);
+
+    return new productClass(cleanData).updateProduct({ payload: cleanData, product_shop, productId });
   }
 
   static async searchProductByUser({
@@ -76,7 +93,7 @@ export class ProductFactory {
     filter = { isPublished: true },
     limit = 60,
     page = 1,
-    select = ['product_name', 'product_price', 'product_thumb', 'product_shop'],
+    select = ['product_name', 'product_price', 'product_thumb', 'product_shop', 'product_type', 'product_attributes'],
   }: { limit?: number; sort?: string; page?: number; filter?: Record<string, any>; select?: (keyof IProduct)[] }) {
     return ProductRepository.findAllProducts({ filter, page, select: getSelectData(select), limit, sort });
   }
@@ -104,6 +121,15 @@ class Product {
   async createProduct({ product_shop }: { product_shop?: Types.ObjectId } = {}) {
     return productModel.create({ ...this, product_shop });
   }
+
+  async updateProduct({
+    productId,
+    product_shop,
+    payload,
+    isNew = true,
+  }: { productId: string; product_shop: string; payload: Record<string, any>; isNew?: boolean }) {
+    return ProductRepository.updateProductById({ productId, product_shop, payload, isNew, model: productModel });
+  }
 }
 
 // Clothing product class
@@ -123,6 +149,18 @@ class Clothing extends Product {
       throw new BadRequestError('Failed to create clothing product');
     }
     return newProduct;
+  }
+
+  async updateProduct({
+    productId,
+    product_shop,
+    payload,
+    isNew = true,
+  }: { productId: string; product_shop: string; payload: Record<string, any>; isNew?: boolean }) {
+    if (this.product_attributes) {
+      await ProductRepository.updateProductById({ productId, product_shop, payload, isNew, model: clothingModel });
+    }
+    return super.updateProduct({ productId, product_shop, payload, isNew });
   }
 }
 
@@ -144,6 +182,18 @@ class Electronics extends Product {
     }
     return newProduct;
   }
+
+  async updateProduct({
+    productId,
+    product_shop,
+    payload,
+    isNew = true,
+  }: { productId: string; product_shop: string; payload: Record<string, any>; isNew?: boolean }) {
+    if (this.product_attributes) {
+      await ProductRepository.updateProductById({ productId, product_shop, payload, isNew, model: electronicsModel });
+    }
+    return super.updateProduct({ productId, product_shop, payload, isNew });
+  }
 }
 
 class Furniture extends Product {
@@ -162,6 +212,18 @@ class Furniture extends Product {
       throw new BadRequestError('Failed to create furniture product');
     }
     return newProduct;
+  }
+
+  async updateProduct({
+    productId,
+    product_shop,
+    payload,
+    isNew = true,
+  }: { productId: string; product_shop: string; payload: Record<string, any>; isNew?: boolean }) {
+    if (this.product_attributes) {
+      await ProductRepository.updateProductById({ productId, product_shop, payload, isNew, model: furnitureModel });
+    }
+    return super.updateProduct({ productId, product_shop, payload, isNew });
   }
 }
 

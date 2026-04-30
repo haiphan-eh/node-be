@@ -7,12 +7,42 @@ import type { Request, Response } from 'express';
 export const createProduct = async (req: Request, res: Response) => {
   const payload = req.body;
   const { product_type: type } = payload as { product_type: ProductType };
+  const product_shop = req.user?.userId;
 
-  payload.product_shop = req.user?.userId;
+  if (!product_shop) {
+    throw new BadRequestError('Product shop is required');
+  }
+
+  payload.product_shop = product_shop;
 
   new SuccessResponse({
     message: 'Create new product successfully',
     metadata: await ProductService.createProduct({ type, payload }),
+  }).send(res);
+};
+
+export const updateProduct = async (req: Request, res: Response) => {
+  const productId = req.params.productId as string;
+
+  if (!productId) {
+    throw new BadRequestError('Product ID is required');
+  }
+
+  const payload = req.body;
+  const { product_type: type } = payload as { product_type: ProductType };
+  const product_shop = req.user?.userId;
+
+  if (!type) {
+    throw new BadRequestError('Product type is required');
+  }
+
+  if (!product_shop) {
+    throw new BadRequestError('Product shop is required');
+  }
+
+  new SuccessResponse({
+    message: 'Update product successfully',
+    metadata: await ProductService.updateProduct({ type, payload, product_shop, productId }),
   }).send(res);
 };
 
