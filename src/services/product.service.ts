@@ -4,14 +4,28 @@ import {
   type ProductType,
   clothingModel,
   electronicsModel,
+  furnitureModel,
   productModel,
 } from '@/models/product.model.js';
 import type { Types } from 'mongoose';
 
+type ProductConstructor = new (payload: ProductItem) => Product;
+
 // Factory class to create products based on type
 export class ProductFactory {
+  private static productRegistry: Record<string, ProductConstructor> = {};
+  static registerProductType(type: ProductType, productClass: ProductConstructor) {
+    ProductFactory.productRegistry[type] = productClass;
+  }
+
   static async createProduct({ type, payload }: { type: ProductType; payload: ProductItem }) {
-    return new Clothing(payload).createProduct();
+    const productClass = ProductFactory.productRegistry[type];
+
+    if (!productClass) {
+      throw new BadRequestError(`Unsupported product type: ${type}`);
+    }
+
+    return new productClass(payload).createProduct();
   }
 }
 
@@ -22,7 +36,7 @@ class Product {
   product_description!: string;
   product_price!: number;
   product_quantity!: number;
-  product_type!: 'Electronics' | 'Clothing' | 'Furniture';
+  product_type!: ProductType;
   product_shop!: Types.ObjectId;
   product_attributes!: Record<string, any>;
 
@@ -30,7 +44,7 @@ class Product {
     Object.assign(this, payload);
   }
 
-  async createProduct({ product_shop }: { product_shop: Types.ObjectId }) {
+  async createProduct({ product_shop }: { product_shop?: Types.ObjectId } = {}) {
     return productModel.create({ ...this, product_shop });
   }
 }
@@ -74,3 +88,27 @@ class Electronics extends Product {
     return newProduct;
   }
 }
+
+class Furniture extends Product {
+  async createProduct() {
+    const newFurniture = await furnitureModel.create({
+      ...this.product_attributes,
+      product_shop: this.product_shop,
+    });
+
+    if (!newFurniture) {
+      throw new BadRequestError('Failed to create furniture attributes');
+    }
+
+    const newProduct = await super.createProduct({ product_shop: newFurniture._id });
+    if (!newProduct) {
+      throw new BadRequestError('Failed to create furniture product');
+    }
+    return newProduct;
+  }
+}
+
+// Register product types in the factory
+ProductFactory.registerProductType('Clothing', Clothing);
+ProductFactory.registerProductType('Electronics', Electronics);
+ProductFactory.registerProductType('Furniture', Furniture);

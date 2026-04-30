@@ -59,6 +59,23 @@ const electronicsSchema = new Schema(
   },
 );
 
+// product type furniture
+const furnitureSchema = new Schema(
+  {
+    manufacturer: {
+      type: String,
+      required: true,
+    },
+    model: String,
+    color: String,
+    product_shop: { type: Schema.Types.ObjectId, ref: SHOP_MODEL },
+  },
+  {
+    collection: 'Furniture',
+    timestamps: true,
+  },
+);
+
 // Interface for type safety
 type IProduct = InferSchemaType<typeof productSchema> & {
   _id: Types.ObjectId;
@@ -69,11 +86,15 @@ type IClothing = InferSchemaType<typeof clothingSchema> & {
 type IElectronic = InferSchemaType<typeof electronicsSchema> & {
   _id: Types.ObjectId;
 };
+type IFurniture = InferSchemaType<typeof furnitureSchema> & {
+  _id: Types.ObjectId;
+};
 
-export type ProductItem = IProduct | IClothing | IElectronic;
+export type ProductItem = IProduct | IClothing | IElectronic | IFurniture;
 
 export type ProductType = IProduct['product_type'];
 // Create the model
 export const productModel = model<IProduct>(DOCUMENT_NAME, productSchema);
 export const clothingModel = model<IClothing>('Clothing', clothingSchema);
 export const electronicsModel = model<IElectronic>('Electronics', electronicsSchema);
+export const furnitureModel = model<IFurniture>('Furniture', furnitureSchema);
