@@ -102,8 +102,6 @@ export const searchProductByUser = async ({
   limit?: number;
   offset?: number;
 }) => {
-  const regexSearch = new RegExp(keySearch); // 'i' for case-insensitive
-
   /*  const results = await productModel.find({
     $or: [
       { product_name: regexSearch },
@@ -130,7 +128,7 @@ export const searchProductByUser = async ({
 
   const results = await productModel
     .find({
-      $text: { $search: regexSearch },
+      $text: { $search: keySearch },
       isPublished: true,
     })
     .sort({
