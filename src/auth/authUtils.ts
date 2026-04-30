@@ -4,6 +4,7 @@ import { asyncHandler } from '@/helpers/asyncHandler.js';
 import { KeyTokenService } from '@/services/index.js';
 import type { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
+import type { Types } from 'mongoose';
 
 export const createTokenPair = async ({
   payload,
@@ -29,7 +30,7 @@ export const createTokenPair = async ({
 };
 
 export const authentication = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-  const userId = req.headers[HEADER.CLIENT_ID];
+  const userId = req.headers[HEADER.CLIENT_ID] as string | undefined;
   if (!userId) {
     throw new AuthFailureError("Invalid request: Missing 'client-id' header");
   }

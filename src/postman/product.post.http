@@ -37,3 +37,43 @@ authorization: {{accessToken}}
         "material": "Denim"
     }
 }
+
+
+### get draft products
+# @name getDrafts
+GET {{url_dev}}/product/drafts/all?limit=10&offset=0
+Content-Type: application/json
+x-api-key: {{x_api_key}}
+x-client-id: {{clientId}}
+authorization: {{accessToken}}
+
+### get published products
+# @name getPublishedProducts
+GET {{url_dev}}/product/published/all?limit=10&offset=0
+Content-Type: application/json
+x-api-key: {{x_api_key}}
+x-client-id: {{clientId}}
+authorization: {{accessToken}}
+
+### set product vars
+@draftProductId = {{getDrafts.response.body.metadata[0]._id}}
+@publishedProductId = {{getPublishedProducts.response.body.metadata[0]._id}}
+
+### set publish product
+POST {{url_dev}}/product/publish/{{draftProductId}}
+Content-Type: application/json
+x-api-key: {{x_api_key}}
+x-client-id: {{clientId}}
+authorization: {{accessToken}}
+
+### set unpublish product
+POST {{url_dev}}/product/unpublish/{{publishedProductId}}
+Content-Type: application/json
+x-api-key: {{x_api_key}}
+x-client-id: {{clientId}}
+authorization: {{accessToken}}
+
+### search product by user
+GET {{url_dev}}/product/search/keySearch?keySearch=high
+x-api-key: {{x_api_key}}
+x-client-id: {{clientId}}

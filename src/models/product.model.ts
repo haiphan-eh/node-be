@@ -1,4 +1,5 @@
-import { type InferSchemaType, type ObjectId, Schema, type Types, model } from 'mongoose';
+import { type InferSchemaType, Schema, type Types, model } from 'mongoose';
+import slugify from 'slugify';
 import { DOCUMENT_NAME as SHOP_MODEL } from './shop.model.js';
 
 const DOCUMENT_NAME = 'Product';
@@ -9,6 +10,7 @@ const productSchema = new Schema(
     product_name: { type: String, required: true },
     product_thumb: { type: String, required: true },
     product_description: { type: String },
+    product_slug: { type: String },
     product_price: { type: Number, required: true },
     product_quantity: { type: Number, required: true },
     product_type: {
@@ -16,14 +18,40 @@ const productSchema = new Schema(
       required: true,
       enum: ['Electronics', 'Clothing', 'Furniture'],
     },
-    product_shop: { type: Schema.Types.ObjectId, ref: SHOP_MODEL },
+    product_shop: { type: Schema.Types.ObjectId, ref: SHOP_MODEL, required: true },
     product_attributes: { type: Schema.Types.Mixed, required: true },
+    // more
+    product_ratingsAverage: {
+      type: Number,
+      default: 4.5,
+      min: [1, 'Rating must be at least 1'],
+      max: [5, 'Rating must be at most 5'],
+      set: (val: number) => Math.round(val * 10) / 10, // Round to 1 decimal place
+    },
+    product_variations: [
+      {
+        type: {
+          type: Array,
+          default: [],
+        },
+      },
+    ],
+    isDraft: { type: Boolean, default: true, index: true, select: false },
+    isPublished: { type: Boolean, default: false, index: true, select: false },
   },
   {
     collection: COLLECTION_NAME,
     timestamps: true,
   },
 );
+
+// create index for searching
+productSchema.index({ product_name: 'text', product_description: 'text' });
+
+// Document middleware: runs before .save() and .create()
+productSchema.pre('save', function () {
+  this.product_slug = slugify(this.product_name, { lower: true });
+});
 
 // product type clothing
 const clothingSchema = new Schema(
@@ -34,7 +62,7 @@ const clothingSchema = new Schema(
     },
     size: String,
     material: String,
-    product_shop: { type: Schema.Types.ObjectId, ref: SHOP_MODEL },
+    product_shop: { type: Schema.Types.ObjectId, ref: SHOP_MODEL, required: true },
   },
   {
     collection: 'Clothes',
@@ -51,7 +79,7 @@ const electronicsSchema = new Schema(
     },
     model: String,
     color: String,
-    product_shop: { type: Schema.Types.ObjectId, ref: SHOP_MODEL },
+    product_shop: { type: Schema.Types.ObjectId, ref: SHOP_MODEL, required: true },
   },
   {
     collection: 'Electronics',
@@ -68,7 +96,7 @@ const furnitureSchema = new Schema(
     },
     model: String,
     color: String,
-    product_shop: { type: Schema.Types.ObjectId, ref: SHOP_MODEL },
+    product_shop: { type: Schema.Types.ObjectId, ref: SHOP_MODEL, required: true },
   },
   {
     collection: 'Furniture',

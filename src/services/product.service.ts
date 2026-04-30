@@ -7,6 +7,7 @@ import {
   furnitureModel,
   productModel,
 } from '@/models/product.model.js';
+import { ProductRepository } from '@/services/repositories/index.js';
 import type { Types } from 'mongoose';
 
 type ProductConstructor = new (payload: ProductItem) => Product;
@@ -26,6 +27,46 @@ export class ProductFactory {
     }
 
     return new productClass(payload).createProduct();
+  }
+
+  static async searchProductByUser({
+    keySearch,
+    limit = 60,
+    offset = 0,
+  }: { keySearch: string; limit?: number; offset?: number }) {
+    return ProductRepository.searchProductByUser({ keySearch, limit, offset });
+  }
+
+  static async publishProductByShop({ product_shop, productId }: { product_shop: string; productId: string }) {
+    return ProductRepository.publishProductByShop({
+      product_shop,
+      productId,
+    });
+  }
+
+  static async unpublishProductByShop({ product_shop, productId }: { product_shop: string; productId: string }) {
+    return ProductRepository.unpublishProductByShop({
+      product_shop,
+      productId,
+    });
+  }
+
+  static async findAllDraftsForShop({
+    product_shop,
+    limit = 60,
+    offset = 0,
+  }: { product_shop: string; limit?: number; offset?: number }) {
+    const query = { product_shop, isDraft: true };
+    return ProductRepository.findAllDraftsForShop({ query, limit, offset });
+  }
+
+  static async findAllPublishedForShop({
+    product_shop,
+    limit = 60,
+    offset = 0,
+  }: { product_shop: string; limit?: number; offset?: number }) {
+    const query = { product_shop, isDraft: false };
+    return ProductRepository.findAllPublishedForShop({ query, limit, offset });
   }
 }
 
@@ -61,7 +102,7 @@ class Clothing extends Product {
       throw new BadRequestError('Failed to create clothing attributes');
     }
 
-    const newProduct = await super.createProduct({ product_shop: newClothing._id });
+    const newProduct = await super.createProduct({ product_shop: newClothing.product_shop });
     if (!newProduct) {
       throw new BadRequestError('Failed to create clothing product');
     }
@@ -81,7 +122,7 @@ class Electronics extends Product {
       throw new BadRequestError('Failed to create electronics attributes');
     }
 
-    const newProduct = await super.createProduct({ product_shop: newElectronics._id });
+    const newProduct = await super.createProduct({ product_shop: newElectronics.product_shop });
     if (!newProduct) {
       throw new BadRequestError('Failed to create electronics product');
     }
@@ -100,7 +141,7 @@ class Furniture extends Product {
       throw new BadRequestError('Failed to create furniture attributes');
     }
 
-    const newProduct = await super.createProduct({ product_shop: newFurniture._id });
+    const newProduct = await super.createProduct({ product_shop: newFurniture.product_shop });
     if (!newProduct) {
       throw new BadRequestError('Failed to create furniture product');
     }
