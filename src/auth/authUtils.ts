@@ -42,14 +42,16 @@ export const authentication = asyncHandler(async (req: Request, res: Response, n
   const refreshToken = req.headers[HEADER.REFRESH_TOKEN]?.toString();
   if (refreshToken) {
     try {
-      const decoded = jwt.verify(refreshToken, keyStore.privateKey) as any;
-      if (userId !== decoded.userId) throw new AuthFailureError('Invalid User');
+      const decoded = jwt.verify(refreshToken, keyStore.privateKey);
+      if (typeof decoded === 'object') {
+        if (userId !== decoded.userId) throw new AuthFailureError('Invalid User');
+        req.user = decoded;
+      }
 
       req.keyStore = keyStore;
-      req.user = decoded;
       req.refreshToken = refreshToken;
       return next();
-    } catch (error) {
+    } catch (_error) {
       throw new AuthFailureError('Refresh Token expired or invalid');
     }
   }
@@ -61,9 +63,11 @@ export const authentication = asyncHandler(async (req: Request, res: Response, n
 
   try {
     const decoded = jwt.verify(accessToken.toString(), keyStore.publicKey);
-    if (typeof decoded === 'object' && decoded.userId !== userId) {
-      throw new AuthFailureError('Invalid request: User ID mismatch');
+    if (typeof decoded === 'object') {
+      if (userId !== decoded.userId) throw new AuthFailureError('Invalid request: User ID mismatch');
+      req.user = decoded;
     }
+
     req.keyStore = keyStore;
     next();
   } catch (_error) {

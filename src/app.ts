@@ -23,11 +23,21 @@ checkOverload();
 /* Handle Errors */
 app.use((error: ErrorResponse, _: unknown, res: Response, next: NextFunction) => {
   const statusCode = error.statusCode || 500;
-  console.log('statusCode: ', error);
-  return res.status(statusCode).json({
+  const errorResponse: {
+    status: string;
+    code: number;
+    message: string;
+    stack?: string;
+  } = {
     status: 'error',
     code: statusCode,
     message: error.message || 'Internal Server Error',
-  });
+  };
+
+  if (process.env.NODE_ENV === 'development') {
+    errorResponse.stack = error.stack;
+  }
+
+  return res.status(statusCode).json(errorResponse);
 });
 export default app;
