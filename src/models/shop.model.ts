@@ -1,23 +1,11 @@
-import { type Document, Schema, model } from 'mongoose';
+import { type Document, type InferSchemaType, Schema, type Types, model } from 'mongoose';
 
 // Constants for the schema
-const DOCUMENT_NAME = 'Shop';
+export const DOCUMENT_NAME = 'Shop';
 const COLLECTION_NAME = 'Shops';
 
-// Interface for type safety
-interface IShop extends Document {
-  name: string;
-  email: string;
-  password: string;
-  status: 'active' | 'inactive';
-  verify: boolean;
-  roles: string[];
-  createdAt?: Date;
-  updatedAt?: Date;
-}
-
 // Define the schema
-const shopSchema = new Schema<IShop>(
+const shopSchema = new Schema(
   {
     name: {
       type: String,
@@ -56,7 +44,10 @@ const shopSchema = new Schema<IShop>(
   },
 );
 
-// Create the model
+type IShop = InferSchemaType<typeof shopSchema> & {
+  _id: Types.ObjectId;
+};
+
 const shopModel = model<IShop>(DOCUMENT_NAME, shopSchema);
 
-export { type IShop, shopModel };
+export { shopModel };

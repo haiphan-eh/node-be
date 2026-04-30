@@ -1,6 +1,7 @@
 import { type InferSchemaType, Schema, model } from 'mongoose';
-const DOCUMENT_NAME = 'Apikey';
-const COLLECTION_NAME = 'Apikeys';
+
+const DOCUMENT_NAME = 'ApiKey';
+const COLLECTION_NAME = 'ApiKeys';
 
 const PERMISSIONS = ['0000', '1111', '2222'] as const;
 type Permission = (typeof PERMISSIONS)[number];
@@ -19,7 +20,7 @@ const apiKeySchema = new Schema(
     permissions: {
       type: [String],
       required: true,
-      enum: ['0000', '1111', '2222'],
+      enum: PERMISSIONS,
     },
   },
   {

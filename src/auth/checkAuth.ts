@@ -2,7 +2,6 @@ import { HEADER } from '@/auth/constant.js';
 import { AuthFailureError } from '@/core/error.response.js';
 import type { IApiKey } from '@/models/apiKey.model.js';
 import { findById } from '@/services/apiKey.service.js';
-import { ApiKeyService } from '@/services/index.js';
 import type { NextFunction, Request, Response } from 'express';
 
 export const apiKey = async (req: Request, res: Response, next: NextFunction) => {

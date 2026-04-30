@@ -1,17 +1,6 @@
 @url_dev=http://localhost:3055/v1/api
 @x_api_key=1234567890
 
-### sign up
-POST {{url_dev}}/shop/signup
-Content-Type: application/json
-x-api-key: {{x_api_key}}
-
-{
-    "name": "Shop TIPS",
-    "email": "shoptipjs@gmail.com",
-    "password": "abc123"
-}
-
 ### login
 # @name login
 POST {{url_dev}}/shop/login
@@ -28,17 +17,23 @@ x-api-key: {{x_api_key}}
 @refreshToken = {{login.response.body.metadata.tokens.refreshToken}}
 @clientId = {{login.response.body.metadata.shop._id}}
 
-### logout
-POST {{url_dev}}/shop/logout
+### create product
+POST {{url_dev}}/product
 Content-Type: application/json
 x-api-key: {{x_api_key}}
 x-client-id: {{clientId}}
 authorization: {{accessToken}}
 
-### refresh token
-POST {{url_dev}}/shop/refresh-token
-Content-Type: application/json
-x-api-key: {{x_api_key}}
-x-client-id: {{clientId}}
-authorization: {{accessToken}}
-x-refresh-token: {{refreshToken}}
+{
+    "product_name" : "New Jeans",
+    "product_description" : "High-quality denim jeans",
+    "product_price" : 50,
+    "product_type" : "Clothing",
+    "product_thumb" : "product_thumb",
+    "product_quantity" : 5,
+    "product_attributes" : {
+        "brand": "Levi s",
+        "size": "L",
+        "material": "Denim"
+    }
+}

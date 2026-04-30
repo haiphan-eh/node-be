@@ -1,47 +1,17 @@
 import { type InferSchemaType, Schema, type Types, model } from 'mongoose';
+import { DOCUMENT_NAME as SHOP_MODEL } from './shop.model.js';
 
 // Constants for the schema
 const DOCUMENT_NAME = 'Key';
 const COLLECTION_NAME = 'Keys';
 
 // Define the schema
-/* const schema = new Schema(
-  {
-    user: {
-      type: Schema.Types.ObjectId,
-      required: true,
-      ref: 'User', // Reference to the User model
-    },
-    publicKey: {
-      type: String,
-      required: true,
-    },
-    privateKey: {
-      type: String,
-      required: true,
-    },
-    refreshTokensUsed: {
-      type: [String], // Array of strings to store used refresh tokens
-      default: [],
-    },
-    refreshToken: {
-      type: String, // String to store the refresh token's using
-      required: true,
-    },
-  },
-  {
-    timestamps: true, // Adds createdAt and updatedAt fields automatically
-    collection: COLLECTION_NAME,
-  },
-);
- */
-
 const schema = new Schema(
   {
     user: {
       type: Schema.Types.ObjectId,
       required: true,
-      ref: 'Shop',
+      ref: SHOP_MODEL,
     },
     publicKey: {
       type: String,
@@ -71,6 +41,6 @@ type IKeyToken = InferSchemaType<typeof schema> & {
   _id: Types.ObjectId; // Adding _id field to the interface
 };
 // Create the model
-const keyTokenModel = model<InferSchemaType<typeof schema>>(DOCUMENT_NAME, schema);
+const keyTokenModel = model<IKeyToken>(DOCUMENT_NAME, schema);
 
 export { keyTokenModel, type IKeyToken };

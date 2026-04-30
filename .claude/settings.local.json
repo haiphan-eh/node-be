@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node -e ' *)",
+      "Bash(rtk ls *)",
+      "Bash(node --input-type=module)"
+    ]
+  }
+}
