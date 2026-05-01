@@ -8,7 +8,7 @@ import {
   furnitureModel,
   productModel,
 } from '@/models/product.model.js';
-import { InventoryRepository, ProductRepository } from '@/services/repositories/index.js';
+import { InventoryRepository, ProductRepository } from '@/models/repositories/index.js';
 import { getSelectData, updateNestedObjectParser } from '@/utils/index.js';
 import type { QueryFilter, Types } from 'mongoose';
 

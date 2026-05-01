@@ -10,8 +10,8 @@
 import { BadRequestError } from '@/core/error.response.js';
 import { DiscountModel } from '@/models/discount.model.js';
 import type { ProductItem } from '@/models/product.model.js';
+import { DiscountRepository } from '@/models/repositories/index.js';
 import { ProductService } from '@/services/index.js';
-import { DiscountRepository } from '@/services/repositories/index.js';
 
 type DiscountItem = {
   code: string;
