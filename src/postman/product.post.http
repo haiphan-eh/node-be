@@ -25,7 +25,7 @@ x-client-id: {{clientId}}
 authorization: {{accessToken}}
 
 {
-    "product_name" : "Laptop",
+    "product_name" : "Laptop 2",
     "product_description" : "High-performance laptop",
     "product_price" : 1500,
     "product_type" : "Electronics",

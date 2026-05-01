@@ -7,7 +7,7 @@ import {
   furnitureModel,
   productModel,
 } from '@/models/product.model.js';
-import { ProductRepository } from '@/services/repositories/index.js';
+import { InventoryRepository, ProductRepository } from '@/services/repositories/index.js';
 import { getSelectData, updateNestedObjectParser } from '@/utils/index.js';
 import type { Types } from 'mongoose';
 
@@ -36,8 +36,7 @@ export class ProductFactory {
     await InventoryRepository.insertInventory({
       productId: newProduct._id.toString(),
       shopId: newProduct.product_shop.toString(),
-      stock: payload.product_quantity,
-      location: 'Initial Stock',
+      stock: newProduct.product_quantity,
     });
 
     return newProduct;
