@@ -1,6 +1,6 @@
 import { BadRequestError } from '@/core/error.response.js';
 import { SuccessResponse } from '@/core/success.response.js';
-import type { IProduct, ProductType } from '@/models/product.model.js';
+import type { ProductItem, ProductType } from '@/models/product.model.js';
 import { ProductService } from '@/services/index.js';
 import type { Request, Response } from 'express';
 
@@ -88,7 +88,7 @@ export const getAllProducts = async (req: Request, res: Response) => {
     sort: string;
     page: number;
     filter: Record<string, any>;
-    select: (keyof IProduct)[];
+    select: (keyof ProductItem)[];
   };
 
   new SuccessResponse({

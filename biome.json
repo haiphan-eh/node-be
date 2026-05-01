@@ -7,11 +7,7 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "ignore": [
-      "node_modules/**",
-      "dist/**",
-      "src/types/env.d.ts"
-    ]
+    "ignore": ["node_modules/**", "dist/**", "src/types/env.d.ts", "./.vscode/**"]
   },
   "formatter": {
     "enabled": true,
@@ -53,10 +49,7 @@
   },
   "overrides": [
     {
-      "include": [
-        "*.ts",
-        "*.tsx"
-      ],
+      "include": ["*.ts", "*.tsx"],
       "linter": {
         "rules": {
           "suspicious": {

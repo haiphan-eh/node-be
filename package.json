@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "pre-check": "biome check --write . && rimraf ./dist && tsc --noEmitOnError && tsc-alias",
+    "pre-check": "biome check --write . && tsc --noEmitOnError && tsc-alias",
     "dev": "tsx watch --no-warnings --env-file=.env server.ts",
     "build": "tsc"
   },

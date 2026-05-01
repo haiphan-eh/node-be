@@ -1,6 +1,5 @@
 import { BadRequestError } from '@/core/error.response.js';
 import {
-  type IProduct,
   type ProductItem,
   type ProductType,
   clothingModel,
@@ -40,6 +39,8 @@ export class ProductFactory {
       stock: payload.product_quantity,
       location: 'Initial Stock',
     });
+
+    return newProduct;
   }
 
   static async updateProduct({
@@ -105,11 +106,14 @@ export class ProductFactory {
     limit = 60,
     page = 1,
     select = ['product_name', 'product_price', 'product_thumb', 'product_shop', 'product_type', 'product_attributes'],
-  }: { limit?: number; sort?: string; page?: number; filter?: Record<string, any>; select?: (keyof IProduct)[] }) {
+  }: { limit?: number; sort?: string; page?: number; filter?: Record<string, any>; select?: (keyof ProductItem)[] }) {
     return ProductRepository.findAllProducts({ filter, page, select: getSelectData(select), limit, sort });
   }
 
-  static async findProduct({ product_id, unSelect = ['_id'] }: { product_id: string; unSelect?: (keyof IProduct)[] }) {
+  static async findProduct({
+    product_id,
+    unSelect = ['_id'],
+  }: { product_id: string; unSelect?: (keyof ProductItem)[] }) {
     return ProductRepository.findProduct({ product_id, unSelect: getSelectData(unSelect, 0) });
   }
 }

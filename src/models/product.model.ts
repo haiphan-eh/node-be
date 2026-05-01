@@ -105,24 +105,30 @@ const furnitureSchema = new Schema(
 );
 
 // Interface for type safety
-export type IProduct = InferSchemaType<typeof productSchema> & {
+type IProductBase<TAttributes> = InferSchemaType<typeof productSchema> & {
+  _id: Types.ObjectId;
+  product_attributes: TAttributes;
+};
+
+type ClothingAttributes = InferSchemaType<typeof clothingSchema> & {
   _id: Types.ObjectId;
 };
-type IClothing = InferSchemaType<typeof clothingSchema> & {
+type ElectronicsAttributes = InferSchemaType<typeof electronicsSchema> & {
   _id: Types.ObjectId;
 };
-type IElectronic = InferSchemaType<typeof electronicsSchema> & {
-  _id: Types.ObjectId;
-};
-type IFurniture = InferSchemaType<typeof furnitureSchema> & {
+type FurnitureAttributes = InferSchemaType<typeof furnitureSchema> & {
   _id: Types.ObjectId;
 };
 
-export type ProductItem = IProduct | IClothing | IElectronic | IFurniture;
-export type AllProductKeys = keyof (IProduct & IClothing & IElectronic & IFurniture);
-export type ProductType = IProduct['product_type'];
+type IClothing = IProductBase<ClothingAttributes>;
+type IElectronic = IProductBase<ElectronicsAttributes>;
+type IFurniture = IProductBase<FurnitureAttributes>;
+
+export type ProductItem = IClothing | IElectronic | IFurniture;
+export type ProductType = ProductItem['product_type'];
+
 // Create the model
-export const productModel = model<IProduct>(DOCUMENT_NAME, productSchema);
+export const productModel = model<ProductItem>(DOCUMENT_NAME, productSchema);
 export const clothingModel = model<IClothing>('Clothing', clothingSchema);
 export const electronicsModel = model<IElectronic>('Electronics', electronicsSchema);
 export const furnitureModel = model<IFurniture>('Furniture', furnitureSchema);
