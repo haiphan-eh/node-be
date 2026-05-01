@@ -2,7 +2,7 @@ import { type InferSchemaType, Schema, type Types, model } from 'mongoose';
 import slugify from 'slugify';
 import { DOCUMENT_NAME as SHOP_MODEL } from './shop.model.js';
 
-const DOCUMENT_NAME = 'Product';
+export const DOCUMENT_NAME = 'Product';
 const COLLECTION_NAME = 'Products';
 
 const productSchema = new Schema(
@@ -119,7 +119,7 @@ type IFurniture = InferSchemaType<typeof furnitureSchema> & {
 };
 
 export type ProductItem = IProduct | IClothing | IElectronic | IFurniture;
-
+export type AllProductKeys = keyof (IProduct & IClothing & IElectronic & IFurniture);
 export type ProductType = IProduct['product_type'];
 // Create the model
 export const productModel = model<IProduct>(DOCUMENT_NAME, productSchema);

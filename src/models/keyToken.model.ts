@@ -38,7 +38,7 @@ const schema = new Schema(
 
 // Interface for type safety
 type IKeyToken = InferSchemaType<typeof schema> & {
-  _id: Types.ObjectId; // Adding _id field to the interface
+  _id: Types.ObjectId;
 };
 // Create the model
 const keyTokenModel = model<IKeyToken>(DOCUMENT_NAME, schema);

@@ -22,13 +22,24 @@ export class ProductFactory {
   }
 
   static async createProduct({ type, payload }: { type: ProductType; payload: ProductItem }) {
-    const productClass = ProductFactory.productRegistry[type];
+    const ProductClass = ProductFactory.productRegistry[type];
 
-    if (!productClass) {
+    if (!ProductClass) {
       throw new BadRequestError(`Unsupported product type: ${type}`);
     }
 
-    return new productClass(payload).createProduct();
+    const productInstance = new ProductClass(payload);
+
+    const newProduct = await productInstance.createProduct();
+    if (!newProduct) {
+      throw new BadRequestError('Failed to create product');
+    }
+    await InventoryRepository.insertInventory({
+      productId: newProduct._id.toString(),
+      shopId: newProduct.product_shop.toString(),
+      stock: payload.product_quantity,
+      location: 'Initial Stock',
+    });
   }
 
   static async updateProduct({
@@ -37,15 +48,15 @@ export class ProductFactory {
     product_shop,
     productId,
   }: { type: ProductType; payload: ProductItem; product_shop: string; productId: string }) {
-    const productClass = ProductFactory.productRegistry[type];
+    const ProductClass = ProductFactory.productRegistry[type];
 
-    if (!productClass) {
+    if (!ProductClass) {
       throw new BadRequestError(`Unsupported product type: ${type}`);
     }
 
-    const cleanData = updateNestedObjectParser(payload);
+    const productInstance = new ProductClass(payload);
 
-    return new productClass(cleanData).updateProduct({ payload: cleanData, product_shop, productId });
+    return productInstance.updateProduct({ payload, product_shop, productId });
   }
 
   static async searchProductByUser({
@@ -128,7 +139,15 @@ class Product {
     payload,
     isNew = true,
   }: { productId: string; product_shop: string; payload: Record<string, any>; isNew?: boolean }) {
-    return ProductRepository.updateProductById({ productId, product_shop, payload, isNew, model: productModel });
+    const cleanData = updateNestedObjectParser(payload);
+
+    return ProductRepository.updateProductById({
+      productId,
+      product_shop,
+      payload: cleanData,
+      isNew,
+      model: productModel,
+    });
   }
 }
 
@@ -158,7 +177,15 @@ class Clothing extends Product {
     isNew = true,
   }: { productId: string; product_shop: string; payload: Record<string, any>; isNew?: boolean }) {
     if (this.product_attributes) {
-      await ProductRepository.updateProductById({ productId, product_shop, payload, isNew, model: clothingModel });
+      const cleanAttributes = updateNestedObjectParser(this.product_attributes);
+
+      await ProductRepository.updateProductById({
+        productId,
+        product_shop,
+        payload: cleanAttributes,
+        isNew,
+        model: clothingModel,
+      });
     }
     return super.updateProduct({ productId, product_shop, payload, isNew });
   }
@@ -190,7 +217,15 @@ class Electronics extends Product {
     isNew = true,
   }: { productId: string; product_shop: string; payload: Record<string, any>; isNew?: boolean }) {
     if (this.product_attributes) {
-      await ProductRepository.updateProductById({ productId, product_shop, payload, isNew, model: electronicsModel });
+      const cleanAttributes = updateNestedObjectParser(this.product_attributes);
+
+      await ProductRepository.updateProductById({
+        productId,
+        product_shop,
+        payload: cleanAttributes,
+        isNew,
+        model: electronicsModel,
+      });
     }
     return super.updateProduct({ productId, product_shop, payload, isNew });
   }
@@ -221,7 +256,15 @@ class Furniture extends Product {
     isNew = true,
   }: { productId: string; product_shop: string; payload: Record<string, any>; isNew?: boolean }) {
     if (this.product_attributes) {
-      await ProductRepository.updateProductById({ productId, product_shop, payload, isNew, model: furnitureModel });
+      const cleanAttributes = updateNestedObjectParser(this.product_attributes);
+
+      await ProductRepository.updateProductById({
+        productId,
+        product_shop,
+        payload: cleanAttributes,
+        isNew,
+        model: furnitureModel,
+      });
     }
     return super.updateProduct({ productId, product_shop, payload, isNew });
   }
