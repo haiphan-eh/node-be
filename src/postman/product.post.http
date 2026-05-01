@@ -1,7 +1,10 @@
-@url_dev=http://localhost:3055/v1/api
-@x_api_key=1234567890
+@accessToken = {{login.response.body.metadata.tokens.accessToken}}
+@refreshToken = {{login.response.body.metadata.tokens.refreshToken}}
+@clientId = {{login.response.body.metadata.shop._id}}
+@draftProductId = {{getDraftProducts.response.body.metadata[0]._id}}
+@publishedProductId = {{getPublishedProducts.response.body.metadata[0]._id}}
 
-### login
+### 1. login
 # @name login
 POST {{url_dev}}/shop/login
 Content-Type: application/json
@@ -12,12 +15,7 @@ x-api-key: {{x_api_key}}
     "password": "abc123"
 }
 
-### set environment variables
-@accessToken = {{login.response.body.metadata.tokens.accessToken}}
-@refreshToken = {{login.response.body.metadata.tokens.refreshToken}}
-@clientId = {{login.response.body.metadata.shop._id}}
-
-### create product
+### 2. create a product
 POST {{url_dev}}/product
 Content-Type: application/json
 x-api-key: {{x_api_key}}
@@ -39,15 +37,15 @@ authorization: {{accessToken}}
 }
 
 
-### get draft products
-# @name getDrafts
+### 3. get draft products
+# @name getDraftProducts
 GET {{url_dev}}/product/drafts/all?limit=10&offset=0
 Content-Type: application/json
 x-api-key: {{x_api_key}}
 x-client-id: {{clientId}}
 authorization: {{accessToken}}
 
-### get published products
+### 4. get published products
 # @name getPublishedProducts
 GET {{url_dev}}/product/published/all?limit=10&offset=0
 Content-Type: application/json
@@ -55,40 +53,37 @@ x-api-key: {{x_api_key}}
 x-client-id: {{clientId}}
 authorization: {{accessToken}}
 
-### set product vars
-@draftProductId = {{getDrafts.response.body.metadata[0]._id}}
-@publishedProductId = {{getPublishedProducts.response.body.metadata[0]._id}}
 
-### set publish product
+### 5. set publish product
 POST {{url_dev}}/product/publish/{{draftProductId}}
 Content-Type: application/json
 x-api-key: {{x_api_key}}
 x-client-id: {{clientId}}
 authorization: {{accessToken}}
 
-### set unpublish product
+### 6. set unpublish product
 POST {{url_dev}}/product/unpublish/{{publishedProductId}}
 Content-Type: application/json
 x-api-key: {{x_api_key}}
 x-client-id: {{clientId}}
 authorization: {{accessToken}}
 
-### search product by user
+### 7. search products by user
 GET {{url_dev}}/product/search/keySearch?keySearch=high
 x-api-key: {{x_api_key}}
 x-client-id: {{clientId}}
 
-### get all products
+### 8. get all products
 GET {{url_dev}}/product
 x-api-key: {{x_api_key}}
 x-client-id: {{clientId}}
 
-### get a product
+### 9. get a product
 GET {{url_dev}}/product/69f33c5ff07aeb97d599861e
 x-api-key: {{x_api_key}}
 x-client-id: {{clientId}}
 
-### update a product
+### 10. update a product
 PATCH {{url_dev}}/product/69f33c5ff07aeb97d599861e
 Content-Type: application/json
 x-api-key: {{x_api_key}}

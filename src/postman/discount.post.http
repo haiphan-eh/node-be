@@ -1,5 +1,9 @@
-@url_dev=http://localhost:3055/v1/api
-@x_api_key=1234567890
+@accessToken = {{login.response.body.metadata.tokens.accessToken}}
+@refreshToken = {{login.response.body.metadata.tokens.refreshToken}}
+@clientId = {{login.response.body.metadata.shop._id}}
+@productId = {{getPublishedProducts.response.body.metadata[0]._id}}
+@products = {{getPublishedProducts.response.body.metadata}}
+@discountCode = {{getDiscountCodes.response.body.metadata.discounts[1].discount_code}}
 
 ### 1. login
 # @name login
@@ -12,13 +16,6 @@ x-api-key: {{x_api_key}}
     "password": "abc123"
 }
 
-### set environment variables
-@accessToken = {{login.response.body.metadata.tokens.accessToken}}
-@refreshToken = {{login.response.body.metadata.tokens.refreshToken}}
-@clientId = {{login.response.body.metadata.shop._id}}
-@productId = {{getPublishedProducts.response.body.metadata[0]._id}}
-@products = {{getPublishedProducts.response.body.metadata}}
-@discountCode = {{getDiscountCodes.response.body.metadata.discounts[1].discount_code}}
 
 ### 2. get published products
 # @name getPublishedProducts
@@ -27,6 +24,7 @@ Content-Type: application/json
 x-api-key: {{x_api_key}}
 x-client-id: {{clientId}}
 authorization: {{accessToken}}
+
 
 ### 3. create a discount code
 POST {{url_dev}}/discount
@@ -60,10 +58,10 @@ x-api-key: {{x_api_key}}
 x-client-id: {{clientId}}
 authorization: {{accessToken}}
 
+
 ### 5. get list discount codes by user
 GET {{url_dev}}/discount/list-product-code?code={{discountCode}}&shopId={{clientId}}
 x-api-key: {{x_api_key}}
-
 
 
 ### 6. get discount amount

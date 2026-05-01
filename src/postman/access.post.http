@@ -1,7 +1,9 @@
-@url_dev=http://localhost:3055/v1/api
-@x_api_key=1234567890
+@accessToken = {{login.response.body.metadata.tokens.accessToken}}
+@refreshToken = {{login.response.body.metadata.tokens.refreshToken}}
+@clientId = {{login.response.body.metadata.shop._id}}
 
-### sign up
+
+### 1. sign up
 POST {{url_dev}}/shop/signup
 Content-Type: application/json
 x-api-key: {{x_api_key}}
@@ -12,7 +14,7 @@ x-api-key: {{x_api_key}}
     "password": "abc123"
 }
 
-### login
+### 2. login
 # @name login
 POST {{url_dev}}/shop/login
 Content-Type: application/json
@@ -23,19 +25,14 @@ x-api-key: {{x_api_key}}
     "password": "abc123"
 }
 
-### set environment variables
-@accessToken = {{login.response.body.metadata.tokens.accessToken}}
-@refreshToken = {{login.response.body.metadata.tokens.refreshToken}}
-@clientId = {{login.response.body.metadata.shop._id}}
-
-### logout
+### 3. logout
 POST {{url_dev}}/shop/logout
 Content-Type: application/json
 x-api-key: {{x_api_key}}
 x-client-id: {{clientId}}
 authorization: {{accessToken}}
 
-### refresh token
+### 4. refresh token
 POST {{url_dev}}/shop/refresh-token
 Content-Type: application/json
 x-api-key: {{x_api_key}}
