@@ -7,13 +7,13 @@ import type { Request, Response } from 'express';
 export const createProduct = async (req: Request, res: Response) => {
   const payload = req.body;
   const { product_type: type } = payload as { product_type: ProductType };
-  const product_shop = req.user?.userId;
+  const shopId = req.user?.userId;
 
-  if (!product_shop) {
-    throw new BadRequestError('Product shop is required');
+  if (!shopId) {
+    throw new BadRequestError('Shop ID is required');
   }
 
-  payload.product_shop = product_shop;
+  payload.product_shop = shopId;
 
   new SuccessResponse({
     message: 'Create new product successfully',
@@ -30,34 +30,34 @@ export const updateProduct = async (req: Request, res: Response) => {
 
   const payload = req.body;
   const { product_type: type } = payload as { product_type: ProductType };
-  const product_shop = req.user?.userId;
+  const shopId = req.user?.userId;
 
   if (!type) {
     throw new BadRequestError('Product type is required');
   }
 
-  if (!product_shop) {
-    throw new BadRequestError('Product shop is required');
+  if (!shopId) {
+    throw new BadRequestError('Shop ID is required');
   }
 
   new SuccessResponse({
     message: 'Update product successfully',
-    metadata: await ProductService.updateProduct({ type, payload, product_shop, productId }),
+    metadata: await ProductService.updateProduct({ type, payload, product_shop: shopId, productId }),
   }).send(res);
 };
 
 export const getAllDraftsForShop = async (req: Request, res: Response) => {
   const { limit, offset } = req.query;
-  const product_shop = req.user?.userId;
+  const shopId = req.user?.userId;
 
-  if (!product_shop) {
-    throw new BadRequestError('Product shop is required');
+  if (!shopId) {
+    throw new BadRequestError('Shop ID is required');
   }
 
   new SuccessResponse({
     message: 'Get list of drafts for shop successfully',
     metadata: await ProductService.findAllDraftsForShop({
-      product_shop,
+      product_shop: shopId,
       limit: Number(limit) || 60,
       offset: Number(offset) || 0,
     }),
@@ -66,16 +66,16 @@ export const getAllDraftsForShop = async (req: Request, res: Response) => {
 
 export const getAllPublishedForShop = async (req: Request, res: Response) => {
   const { limit, offset } = req.query;
-  const product_shop = req.user?.userId;
+  const shopId = req.user?.userId;
 
-  if (!product_shop) {
-    throw new BadRequestError('Product shop is required');
+  if (!shopId) {
+    throw new BadRequestError('Shop ID is required');
   }
 
   new SuccessResponse({
     message: 'Get list of published products for shop successfully',
     metadata: await ProductService.findAllPublishedForShop({
-      product_shop,
+      product_shop: shopId,
       limit: Number(limit) || 60,
       offset: Number(offset) || 0,
     }),
@@ -114,16 +114,16 @@ export const getProduct = async (req: Request, res: Response) => {
 
 export const publishProductByShop = async (req: Request, res: Response) => {
   const productId = req.params.id as string;
-  const product_shop = req.user?.userId;
+  const shopId = req.user?.userId;
 
-  if (!product_shop || !productId) {
-    throw new BadRequestError('Product shop and product ID are required');
+  if (!shopId || !productId) {
+    throw new BadRequestError('Shop ID and product ID are required');
   }
 
   new SuccessResponse({
     message: 'Publish product successfully',
     metadata: await ProductService.publishProductByShop({
-      product_shop,
+      product_shop: shopId,
       productId,
     }),
   }).send(res);
@@ -131,16 +131,16 @@ export const publishProductByShop = async (req: Request, res: Response) => {
 
 export const unpublishProductByShop = async (req: Request, res: Response) => {
   const productId = req.params.id as string;
-  const product_shop = req.user?.userId;
+  const shopId = req.user?.userId;
 
-  if (!product_shop || !productId) {
-    throw new BadRequestError('Product shop and product ID are required');
+  if (!shopId || !productId) {
+    throw new BadRequestError('Shop ID and product ID are required');
   }
 
   new SuccessResponse({
     message: 'Unpublish product successfully',
     metadata: await ProductService.unpublishProductByShop({
-      product_shop,
+      product_shop: shopId,
       productId,
     }),
   }).send(res);
