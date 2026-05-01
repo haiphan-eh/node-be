@@ -1,0 +1,73 @@
+@accessToken = {{login.response.body.metadata.tokens.accessToken}}
+@refreshToken = {{login.response.body.metadata.tokens.refreshToken}}
+@clientId = {{login.response.body.metadata.shop._id}}
+@product = {{getPublishedProducts.response.body.metadata[0]}}
+
+### 1. login
+# @name login
+POST {{url_dev}}/shop/login
+Content-Type: application/json
+x-api-key: {{x_api_key}}
+
+{
+    "email": "shoptipjs@gmail.com",
+    "password": "abc123"
+}
+
+### 2. get published products
+# @name getPublishedProducts
+GET {{url_dev}}/product/published/all?limit=10&offset=0
+Content-Type: application/json
+x-api-key: {{x_api_key}}
+x-client-id: {{clientId}}
+authorization: {{accessToken}}
+
+### 3. get list of carts
+GET {{url_dev}}/cart?userId=1001
+x-api-key: {{x_api_key}}
+
+### 4. add product to cart
+POST {{url_dev}}/cart
+Content-Type: application/json
+x-api-key: {{x_api_key}}
+
+{
+    "userId": 1001,
+    "product": {
+        "quantity": "{{getPublishedProducts.response.body.metadata[0].product_quantity}}",
+        "price": "{{getPublishedProducts.response.body.metadata[0].product_price}}",
+        "productId": "{{getPublishedProducts.response.body.metadata[0]._id}}",
+        "shopId": "{{getPublishedProducts.response.body.metadata[0].product_shop._id}}"
+    }
+}
+
+### 5. update product quantity in cart
+PUT {{url_dev}}/cart
+Content-Type: application/json
+x-api-key: {{x_api_key}}
+
+{
+    "userId": 1001,
+    "shop_orderIds": [
+        {
+            "shopId": "{{getPublishedProducts.response.body.metadata[0].product_shop._id}}",
+            "item_products": [
+                {
+                    "productId": "{{getPublishedProducts.response.body.metadata[0]._id}}",
+                    "quantity":10,
+                    "old_quantity": 2
+                }
+            ]
+        }
+    ]
+  }
+
+### 6. delete product from cart
+DELETE {{url_dev}}/cart
+Content-Type: application/json
+x-api-key: {{x_api_key}}
+
+{
+    "userId": 1001,
+    "productId": "{{getPublishedProducts.response.body.metadata[0]._id}}"
+}

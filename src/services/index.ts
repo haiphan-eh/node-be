@@ -1,5 +1,6 @@
 export * as AccessService from '@/services/access.service.js';
 export * as ApiKeyService from '@/services/apiKey.service.js';
+export * as CartService from '@/services/cart.service.js';
 export * as DiscountService from '@/services/discount.service.js';
 export * as KeyTokenService from '@/services/keyToken.service.js';
 export { ProductFactory as ProductService } from '@/services/product.service.js';

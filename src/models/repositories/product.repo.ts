@@ -8,7 +8,7 @@ const queryProduct = async ({
   limit,
 }: { query: Record<string, any>; offset: number; limit: number }) => {
   return ProductModel.find(query)
-    .populate('product_shop', 'name email -_id') // select [name, email] from Shop collection
+    .populate('product_shop', 'name email _id') // select [name, email, _id] from Shop collection
     .skip(offset)
     .limit(limit)
     .sort({ updatedAt: -1 });
