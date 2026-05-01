@@ -129,7 +129,7 @@ export type ProductKeys = keyof ProductItem;
 export type ProductType = ProductItem['product_type'];
 
 // Create the model
-export const productModel = model<ProductItem>(DOCUMENT_NAME, productSchema);
-export const clothingModel = model<IClothing>('Clothing', clothingSchema);
-export const electronicsModel = model<IElectronic>('Electronics', electronicsSchema);
-export const furnitureModel = model<IFurniture>('Furniture', furnitureSchema);
+export const ProductModel = model<ProductItem>(DOCUMENT_NAME, productSchema);
+export const ClothingModel = model<IClothing>('Clothing', clothingSchema);
+export const ElectronicsModel = model<IElectronic>('Electronics', electronicsSchema);
+export const FurnitureModel = model<IFurniture>('Furniture', furnitureSchema);

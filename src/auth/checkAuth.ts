@@ -4,7 +4,7 @@ import type { IApiKey } from '@/models/apiKey.model.js';
 import { findById } from '@/services/apiKey.service.js';
 import type { NextFunction, Request, Response } from 'express';
 
-export const apiKey = async (req: Request, res: Response, next: NextFunction) => {
+export const apiKey = async (req: Request, _res: Response, next: NextFunction) => {
   const apiKey = req.headers[HEADER.API_KEY]?.toString();
   if (!apiKey) {
     throw new AuthFailureError('Forbidden Error');
@@ -25,7 +25,7 @@ export const apiKey = async (req: Request, res: Response, next: NextFunction) =>
 };
 
 export const permission = (permission: IApiKey['permissions'][0]) => {
-  return (req: Request, res: Response, next: NextFunction) => {
+  return (req: Request, _res: Response, next: NextFunction) => {
     if (!req.objKey.permissions) {
       throw new AuthFailureError('Permission denied');
     }

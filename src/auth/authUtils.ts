@@ -29,7 +29,7 @@ export const createTokenPair = async ({
   return { accessToken, refreshToken };
 };
 
-export const authentication = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+export const authentication = asyncHandler(async (req: Request, _res: Response, next: NextFunction) => {
   const userId = req.headers[HEADER.CLIENT_ID] as string | undefined;
   if (!userId) {
     throw new AuthFailureError("Invalid request: Missing 'client-id' header");

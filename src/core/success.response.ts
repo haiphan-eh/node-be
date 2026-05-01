@@ -31,7 +31,7 @@ export class SuccessResponse {
     this.metadata = metadata;
   }
 
-  send(res: Response, headers = {}) {
+  send(res: Response, _headers = {}) {
     return res.status(this.status).json(this);
   }
 }

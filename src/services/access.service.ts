@@ -1,19 +1,11 @@
-import {
-  createPublicKey,
-  generateKeyPairSync,
-  getRandomValues,
-  randomBytes,
-  scryptSync,
-  timingSafeEqual,
-} from 'node:crypto';
+import { randomBytes, scryptSync, timingSafeEqual } from 'node:crypto';
 import { createTokenPair } from '@/auth/authUtils.js';
 import { AuthFailureError, BadRequestError, ForbiddenError } from '@/core/error.response.js';
 import type { IKeyToken } from '@/models/keyToken.model.js';
-import { shopModel } from '@/models/shop.model.js';
+import { ShopModel } from '@/models/shop.model.js';
 import { KeyTokenService, ShopService } from '@/services/index.js';
 import type { User } from '@/types/user.js';
 import { getInfoData } from '@/utils/index.js';
-import jwt from 'jsonwebtoken';
 
 const passwordService = {
   hash: (password: string) => {
@@ -94,14 +86,14 @@ export const logout = async ({ userId }: { userId: string }) => {
   return deleted;
 };
 export const signUp = async ({ name, email, password }: { name: string; email: string; password: string }) => {
-  const holderShop = await shopModel.findOne({ email }).lean();
+  const holderShop = await ShopModel.findOne({ email }).lean();
   if (holderShop) {
     throw new BadRequestError('Shop already registered!');
   }
 
   const hashedPassword = passwordService.hash(password);
 
-  const newShop = await shopModel.create({ name, email, password: hashedPassword, roles: ['SHOP'] });
+  const newShop = await ShopModel.create({ name, email, password: hashedPassword, roles: ['SHOP'] });
 
   if (newShop) {
     // create privateKey and publicKey for the shop

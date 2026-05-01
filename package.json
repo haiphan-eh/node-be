@@ -4,9 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "pre-check": "biome check --write . && tsc --noEmitOnError && tsc-alias",
+    "pre-check": "biome check --write . && tsc --noEmitOnError",
+    "fix": "biome check --fix --unsafe",
     "dev": "tsx watch --no-warnings --env-file=.env server.ts",
-    "build": "tsc"
+    "build": "tsc && tsc-alias"
   },
   "keywords": [],
   "author": "",
@@ -30,6 +31,7 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/lodash": "^4.17.24",
     "@types/morgan": "^1.9.10",
-    "tsx": "^4.21.0"
+    "tsx": "^4.21.0",
+    "tsc-alias": "^1.8.10"
   }
 }

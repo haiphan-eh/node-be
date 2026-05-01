@@ -21,7 +21,7 @@ dbInstance;
 checkOverload();
 
 /* Handle Errors */
-app.use((error: ErrorResponse, _: unknown, res: Response, next: NextFunction) => {
+app.use((error: ErrorResponse, _: unknown, res: Response, _next: NextFunction) => {
   const statusCode = error.statusCode || 500;
   const errorResponse: {
     status: string;

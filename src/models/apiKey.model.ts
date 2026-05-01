@@ -34,6 +34,6 @@ type IApiKey = InferSchemaType<typeof apiKeySchema> & {
   permissions: Permission[];
 };
 
-const apiKeyModel = model<IApiKey>(DOCUMENT_NAME, apiKeySchema);
+const ApiKeyModel = model<IApiKey>(DOCUMENT_NAME, apiKeySchema);
 
-export { apiKeyModel, type IApiKey };
+export { ApiKeyModel, type IApiKey };

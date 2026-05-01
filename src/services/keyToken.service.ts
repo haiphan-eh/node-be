@@ -1,4 +1,4 @@
-import { keyTokenModel } from '@/models/keyToken.model.js';
+import { KeyTokenModel } from '@/models/keyToken.model.js';
 
 export const createKeyToken = async ({
   userId,
@@ -6,7 +6,7 @@ export const createKeyToken = async ({
   privateKey,
   refreshToken,
 }: { userId: string; publicKey: string; privateKey: string; refreshToken?: string }) => {
-  /*    const keyToken = await keyTokenModel.create({
+  /*    const keyToken = await KeyTokenModel.create({
       user: userId,
       publicKey,
       privateKey,
@@ -17,30 +17,30 @@ export const createKeyToken = async ({
   const update = { publicKey, privateKey, refreshTokensUsed: [], refreshToken };
   const options = { upsert: true, new: true };
 
-  return keyTokenModel.findOneAndUpdate(filter, update, options);
+  return KeyTokenModel.findOneAndUpdate(filter, update, options);
 };
 
 export const findByUserId = async (userId: string) => {
-  return keyTokenModel.findOne({ user: userId });
+  return KeyTokenModel.findOne({ user: userId });
 };
 
 export const deleteKeyByUserId = async (userId: string) => {
-  return keyTokenModel.deleteOne({ user: userId });
+  return KeyTokenModel.deleteOne({ user: userId });
 };
 
 export const findByRefreshTokenUsed = async (refreshToken: string) => {
-  return keyTokenModel.findOne({ refreshTokensUsed: refreshToken });
+  return KeyTokenModel.findOne({ refreshTokensUsed: refreshToken });
 };
 
 export const findByRefreshToken = async (refreshToken: string) => {
-  return keyTokenModel.findOne({ refreshToken });
+  return KeyTokenModel.findOne({ refreshToken });
 };
 
 export const updateKeyTokenUsed = async ({
   newRefreshToken,
   usedRefreshToken,
 }: { newRefreshToken: string; usedRefreshToken: string }) => {
-  return keyTokenModel.findOneAndUpdate(
+  return KeyTokenModel.findOneAndUpdate(
     { refreshToken: usedRefreshToken },
     { $push: { refreshTokensUsed: usedRefreshToken }, $set: { refreshToken: newRefreshToken } },
     { new: true },

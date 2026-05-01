@@ -1,4 +1,4 @@
-import { shopModel } from '@/models/shop.model.js';
+import { ShopModel } from '@/models/shop.model.js';
 
 export const findByEmail = async ({
   email,
@@ -10,5 +10,5 @@ export const findByEmail = async ({
     roles: 1,
   },
 }: { email: string; select?: Record<string, number> }) => {
-  return shopModel.findOne({ email }).select(select).lean();
+  return ShopModel.findOne({ email }).select(select).lean();
 };

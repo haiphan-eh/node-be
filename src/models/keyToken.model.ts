@@ -41,6 +41,6 @@ type IKeyToken = InferSchemaType<typeof schema> & {
   _id: Types.ObjectId;
 };
 // Create the model
-const keyTokenModel = model<IKeyToken>(DOCUMENT_NAME, schema);
+const KeyTokenModel = model<IKeyToken>(DOCUMENT_NAME, schema);
 
-export { keyTokenModel, type IKeyToken };
+export { KeyTokenModel, type IKeyToken };

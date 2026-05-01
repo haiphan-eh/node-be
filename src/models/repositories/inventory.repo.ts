@@ -1,4 +1,4 @@
-import { inventoryModel } from '@/models/inventory.model.js';
+import { InventoryModel } from '@/models/inventory.model.js';
 
 export const insertInventory = async ({
   productId,
@@ -11,7 +11,7 @@ export const insertInventory = async ({
   stock: number;
   location?: string;
 }) => {
-  return inventoryModel.create({
+  return InventoryModel.create({
     inventory_productId: productId,
     inventory_stock: stock,
     inventory_shopId: shopId,

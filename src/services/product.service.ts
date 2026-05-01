@@ -1,12 +1,12 @@
 import { BadRequestError } from '@/core/error.response.js';
 import {
+  ClothingModel,
+  ElectronicsModel,
+  FurnitureModel,
   type ProductItem,
   type ProductKeys,
+  ProductModel,
   type ProductType,
-  clothingModel,
-  electronicsModel,
-  furnitureModel,
-  productModel,
 } from '@/models/product.model.js';
 import { InventoryRepository, ProductRepository } from '@/models/repositories/index.js';
 import { getSelectData, updateNestedObjectParser } from '@/utils/index.js';
@@ -137,7 +137,7 @@ class Product {
   }
 
   async createProduct({ product_shop }: { product_shop?: Types.ObjectId } = {}) {
-    return productModel.create({ ...this, product_shop });
+    return ProductModel.create({ ...this, product_shop });
   }
 
   async updateProduct({
@@ -153,7 +153,7 @@ class Product {
       product_shop,
       payload: cleanData,
       isNew,
-      model: productModel,
+      model: ProductModel,
     });
   }
 }
@@ -161,7 +161,7 @@ class Product {
 // Clothing product class
 class Clothing extends Product {
   async createProduct() {
-    const newClothing = await clothingModel.create({
+    const newClothing = await ClothingModel.create({
       ...this.product_attributes,
       product_shop: this.product_shop,
     });
@@ -191,7 +191,7 @@ class Clothing extends Product {
         product_shop,
         payload: cleanAttributes,
         isNew,
-        model: clothingModel,
+        model: ClothingModel,
       });
     }
     return super.updateProduct({ productId, product_shop, payload, isNew });
@@ -201,7 +201,7 @@ class Clothing extends Product {
 // Electronics product class
 class Electronics extends Product {
   async createProduct() {
-    const newElectronics = await electronicsModel.create({
+    const newElectronics = await ElectronicsModel.create({
       ...this.product_attributes,
       product_shop: this.product_shop,
     });
@@ -231,7 +231,7 @@ class Electronics extends Product {
         product_shop,
         payload: cleanAttributes,
         isNew,
-        model: electronicsModel,
+        model: ElectronicsModel,
       });
     }
     return super.updateProduct({ productId, product_shop, payload, isNew });
@@ -240,7 +240,7 @@ class Electronics extends Product {
 
 class Furniture extends Product {
   async createProduct() {
-    const newFurniture = await furnitureModel.create({
+    const newFurniture = await FurnitureModel.create({
       ...this.product_attributes,
       product_shop: this.product_shop,
     });
@@ -270,7 +270,7 @@ class Furniture extends Product {
         product_shop,
         payload: cleanAttributes,
         isNew,
-        model: furnitureModel,
+        model: FurnitureModel,
       });
     }
     return super.updateProduct({ productId, product_shop, payload, isNew });

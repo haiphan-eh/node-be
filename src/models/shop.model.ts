@@ -48,6 +48,6 @@ type IShop = InferSchemaType<typeof shopSchema> & {
   _id: Types.ObjectId;
 };
 
-const shopModel = model<IShop>(DOCUMENT_NAME, shopSchema);
+const ShopModel = model<IShop>(DOCUMENT_NAME, shopSchema);
 
-export { shopModel };
+export { ShopModel };
