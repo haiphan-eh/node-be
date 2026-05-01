@@ -1,6 +1,7 @@
 import { BadRequestError } from '@/core/error.response.js';
 import {
   type ProductItem,
+  type ProductKeys,
   type ProductType,
   clothingModel,
   electronicsModel,
@@ -9,7 +10,7 @@ import {
 } from '@/models/product.model.js';
 import { InventoryRepository, ProductRepository } from '@/services/repositories/index.js';
 import { getSelectData, updateNestedObjectParser } from '@/utils/index.js';
-import type { Types } from 'mongoose';
+import type { QueryFilter, Types } from 'mongoose';
 
 type ProductConstructor = new (payload: ProductItem) => Product;
 
@@ -105,14 +106,17 @@ export class ProductFactory {
     limit = 60,
     page = 1,
     select = ['product_name', 'product_price', 'product_thumb', 'product_shop', 'product_type', 'product_attributes'],
-  }: { limit?: number; sort?: string; page?: number; filter?: Record<string, any>; select?: (keyof ProductItem)[] }) {
+  }: {
+    limit?: number;
+    sort?: string;
+    page?: number;
+    filter?: QueryFilter<ProductItem>;
+    select?: ProductKeys[];
+  }) {
     return ProductRepository.findAllProducts({ filter, page, select: getSelectData(select), limit, sort });
   }
 
-  static async findProduct({
-    product_id,
-    unSelect = ['_id'],
-  }: { product_id: string; unSelect?: (keyof ProductItem)[] }) {
+  static async findProduct({ product_id, unSelect = ['_id'] }: { product_id: string; unSelect?: ProductKeys[] }) {
     return ProductRepository.findProduct({ product_id, unSelect: getSelectData(unSelect, 0) });
   }
 }

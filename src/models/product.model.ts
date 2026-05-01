@@ -125,6 +125,7 @@ type IElectronic = IProductBase<ElectronicsAttributes>;
 type IFurniture = IProductBase<FurnitureAttributes>;
 
 export type ProductItem = IClothing | IElectronic | IFurniture;
+export type ProductKeys = keyof ProductItem;
 export type ProductType = ProductItem['product_type'];
 
 // Create the model

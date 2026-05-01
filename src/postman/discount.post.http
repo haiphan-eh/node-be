@@ -1,0 +1,80 @@
+@url_dev=http://localhost:3055/v1/api
+@x_api_key=1234567890
+
+### 1. login
+# @name login
+POST {{url_dev}}/shop/login
+Content-Type: application/json
+x-api-key: {{x_api_key}}
+
+{
+    "email": "shoptipjs@gmail.com",
+    "password": "abc123"
+}
+
+### set environment variables
+@accessToken = {{login.response.body.metadata.tokens.accessToken}}
+@refreshToken = {{login.response.body.metadata.tokens.refreshToken}}
+@clientId = {{login.response.body.metadata.shop._id}}
+@productId = {{getPublishedProducts.response.body.metadata[0]._id}}
+@products = {{getPublishedProducts.response.body.metadata}}
+@discountCode = {{getDiscountCodes.response.body.metadata.discounts[1].discount_code}}
+
+### 2. get published products
+# @name getPublishedProducts
+GET {{url_dev}}/product/published/all?limit=10&offset=0
+Content-Type: application/json
+x-api-key: {{x_api_key}}
+x-client-id: {{clientId}}
+authorization: {{accessToken}}
+
+### 3. create a discount code
+POST {{url_dev}}/discount
+Content-Type: application/json
+x-api-key: {{x_api_key}}
+x-client-id: {{clientId}}
+authorization: {{accessToken}}
+
+{
+    "code": "SUMMER201",
+    "startDate": "2026-01-01T00:00:00.000Z",
+    "endDate": "2029-07-31T23:59:59.999Z",
+    "type": "percentage",
+    "isActive": true,
+    "shopId": "{{clientId}}",
+    "minOrderValue": 50,
+    "description": "20% off on all products during summer sale",
+    "value": 20,
+    "appliesTo": "specific_products",
+    "name": "Summer Sale 2024",
+    "maxUses": 100,
+    "maxUsesPerUser": 2,
+    "productIds": ["{{productId}}"]
+}
+
+
+### 4. get discount codes by shop
+# @name getDiscountCodes
+GET {{url_dev}}/discount
+x-api-key: {{x_api_key}}
+x-client-id: {{clientId}}
+authorization: {{accessToken}}
+
+### 5. get list discount codes by user
+GET {{url_dev}}/discount/list-product-code?code={{discountCode}}&shopId={{clientId}}
+x-api-key: {{x_api_key}}
+
+
+
+### 6. get discount amount
+POST {{url_dev}}/discount/amount
+Content-Type: application/json
+x-api-key: {{x_api_key}}
+x-client-id: {{clientId}}
+authorization: {{accessToken}}
+
+{
+    "shopId": "{{clientId}}",
+    "code": "SUMMER200",
+    "products": {{products}}
+}
