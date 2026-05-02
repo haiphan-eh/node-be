@@ -210,7 +210,6 @@ export const getDiscountAmount = async ({
     discount_max_uses,
     discount_start_date,
     discount_end_date,
-    discount_code,
     discount_min_order_value,
     discount_max_use_per_user,
     discount_used_by,
@@ -235,39 +234,74 @@ export const getDiscountAmount = async ({
     }
   }
 
+  // Tính tổng tiền toàn bộ giỏ hàng (Để trả về cho Frontend hiển thị)
+  const totalCartValue = products.reduce((total, p) => total + p.product_price * p.product_quantity, 0);
+
   // filter products if discount applies to specific products
   const applicableProducts =
     discount_applies_to === 'specific_products'
       ? products.filter((product) => discount_productIds.includes(product._id))
       : products;
 
-  const orderValue = applicableProducts.reduce(
-    (total, product) => total + product.product_price * product.product_quantity,
-    0,
-  );
+  // Tính tổng tiền chỉ của các sản phẩm ĐƯỢC ÁP DỤNG mã
+  const applicableOrderValue = applicableProducts.reduce((total, p) => total + p.product_price * p.product_quantity, 0);
 
-  if (orderValue < discount_min_order_value) {
-    throw new BadRequestError(
-      `Minimum order value for this discount code: ${discount_code} is ${discount_min_order_value}`,
-    );
+  /* SOFT ERRORS (Giỏ hàng không đủ điều kiện - Trả về 0) */
+  // Xử lý TODO: Không có sản phẩm áp dụng
+  if (applicableProducts.length === 0) {
+    return {
+      totalOrder: totalCartValue,
+      discountAmount: 0,
+      totalAfterDiscount: totalCartValue,
+      warning: 'Mã giảm giá không áp dụng cho các sản phẩm trong giỏ hàng của bạn.',
+      discountDetail: [],
+    };
   }
 
-  const amount = discount_type === 'fixed_amount' ? discount_value : Math.round((orderValue * discount_value) / 100);
-  return {
-    totalOrder: orderValue,
-    discountAmount: amount,
-    totalAfterDiscount: orderValue - amount,
-    discountDetail: applicableProducts.map((product) => ({
+  // Chặn trường hợp tổng đơn nhỏ hơn điều kiện
+  if (applicableOrderValue < discount_min_order_value) {
+    return {
+      totalOrder: totalCartValue,
+      discountAmount: 0,
+      totalAfterDiscount: totalCartValue,
+      warning: `Cần mua thêm ${discount_min_order_value - applicableOrderValue} để áp dụng mã này.`,
+      discountDetail: [],
+    };
+  }
+
+  /* TÍNH TOÁN DISCOUNT AMOUNT */
+  let amount =
+    discount_type === 'fixed_amount' ? discount_value : Math.round((applicableOrderValue * discount_value) / 100);
+
+  if (amount > applicableOrderValue) {
+    amount = applicableOrderValue;
+  }
+
+  /* PHÂN BỔ DISCOUNT VÀO TỪNG SẢN PHẨM  */
+  const discountDetail = applicableProducts.map((product) => {
+    const productTotal = product.product_price * product.product_quantity;
+
+    // Tỷ trọng của sản phẩm này so với tổng giá trị được áp dụng mã
+    const productWeight = productTotal / applicableOrderValue;
+
+    // Phân bổ tiền giảm giá dựa theo tỷ trọng
+    const productDiscountAmount = Math.round(amount * productWeight);
+
+    return {
       productId: product._id,
       productName: product.product_name,
       quantity: product.product_quantity,
       price: product.product_price,
-      totalPrice: product.product_price * product.product_quantity,
-      discountAmount:
-        discount_type === 'fixed_amount'
-          ? Math.round(product.product_price * product.product_quantity - discount_value)
-          : Math.round((product.product_price * product.product_quantity * discount_value) / 100),
-    })),
+      totalPrice: productTotal,
+      discountAmount: productDiscountAmount, // Tiền giảm giá chuẩn xác cho sản phẩm này
+    };
+  });
+
+  return {
+    totalOrder: totalCartValue,
+    discountAmount: amount,
+    totalAfterDiscount: totalCartValue - amount,
+    discountDetail,
   };
 };
 

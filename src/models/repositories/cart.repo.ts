@@ -2,6 +2,16 @@ import { CartModel, type CartProduct, type CartType } from '@/models/cart.model.
 import { getSelectData } from '@/utils/index.js';
 import type { QueryFilter, QueryOptions, UpdateQuery } from 'mongoose';
 
+export const findCartByUserId = async ({ userId }: { userId: number }) => {
+  const query = { cart_userId: userId, cart_state: 'active' };
+  return CartModel.findOne(query).lean();
+};
+
+export const findCartById = async ({ cartId }: { cartId: string }) => {
+  const query = { _id: cartId, cart_state: 'active' };
+  return CartModel.findOne(query).lean();
+};
+
 export const createCart = async ({ userId, product }: { userId: number; product: CartProduct }) => {
   const query: QueryFilter<CartType> = {
     cart_userId: userId,

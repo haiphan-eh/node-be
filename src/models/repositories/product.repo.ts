@@ -1,5 +1,6 @@
 import { BadRequestError } from '@/core/error.response.js';
-import { ProductModel } from '@/models/product.model.js';
+import type { CartProduct } from '@/models/cart.model.js';
+import { type ProductItem, ProductModel } from '@/models/product.model.js';
 import type { Model, SortOrder } from 'mongoose';
 
 const queryProduct = async ({
@@ -133,4 +134,16 @@ export const searchProductByUser = async ({
   });
 
   return results;
+};
+
+export const checkProducts = async ({ products }: { products: CartProduct[] }): Promise<ProductItem[]> => {
+  //@ts-ignore
+  return Promise.all(
+    products
+      .map(async (product) => {
+        const foundProduct = await findProduct({ product_id: product.productId.toString(), unSelect: {} });
+        return foundProduct;
+      })
+      .filter(Boolean),
+  );
 };

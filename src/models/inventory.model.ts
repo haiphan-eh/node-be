@@ -38,6 +38,5 @@ type IInventory = InferSchemaType<typeof inventorySchema> & {
   _id: Types.ObjectId;
 };
 
-const InventoryModel = model<IInventory>(DOCUMENT_NAME, inventorySchema);
-
-export { InventoryModel };
+export type InventoryType = IInventory;
+export const InventoryModel = model<IInventory>(DOCUMENT_NAME, inventorySchema);

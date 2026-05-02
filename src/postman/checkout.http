@@ -22,52 +22,26 @@ x-api-key: {{x_api_key}}
 x-client-id: {{clientId}}
 authorization: {{accessToken}}
 
-### 3. get list of carts
-GET {{url_dev}}/cart?userId=1001
-x-api-key: {{x_api_key}}
-
-### 4. add product to cart
-POST {{url_dev}}/cart
+### 3. checkout review
+POST {{url_dev}}/checkout
 Content-Type: application/json
 x-api-key: {{x_api_key}}
 
 {
     "userId": 1001,
-    "product": {
-        "quantity": "{{getPublishedProducts.response.body.metadata[1].product_quantity}}",
-        "price": "{{getPublishedProducts.response.body.metadata[1].product_price}}",
-        "productId": "{{getPublishedProducts.response.body.metadata[1]._id}}",
-        "shopId": "{{getPublishedProducts.response.body.metadata[1].product_shop._id}}"
-    }
-}
-
-### 5. update product quantity in cart
-PUT {{url_dev}}/cart
-Content-Type: application/json
-x-api-key: {{x_api_key}}
-
-{
-    "userId": 1001,
-    "shop_orderIds": [
+    "cartId": "69f5119a121d3271ece24d26",
+     "shop_orderIds": [
         {
             "shopId": "{{getPublishedProducts.response.body.metadata[0].product_shop._id}}",
+            "shop_discounts":["SUMMER201"],
             "item_products": [
                 {
                     "productId": "{{getPublishedProducts.response.body.metadata[0]._id}}",
-                    "quantity":10,
-                    "old_quantity": 2
+                    "shopId": "{{getPublishedProducts.response.body.metadata[0].product_shop._id}}",
+                    "quantity": "{{getPublishedProducts.response.body.metadata[0].product_quantity}}",
+                    "price": "{{getPublishedProducts.response.body.metadata[0].product_price}}"
                 }
             ]
         }
     ]
-  }
-
-### 6. delete product from cart
-DELETE {{url_dev}}/cart
-Content-Type: application/json
-x-api-key: {{x_api_key}}
-
-{
-    "userId": 1001,
-    "productId": "{{getPublishedProducts.response.body.metadata[0]._id}}"
 }
