@@ -3,14 +3,15 @@ import swaggerJsDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 
 const swaggerOptions = {
-  swaggerDefinition: {
+  definition: {
     openapi: '3.0.0',
     info: {
-      title: 'API Document của Project',
+      title: 'Ecommerce API',
       version: '1.0.0',
-      description: 'Guide for using API endpoints of ecommerce project',
+      description: 'Complete API documentation for ecommerce platform',
       contact: {
-        name: 'Hai',
+        name: 'API Support',
+        email: 'support@ecommerce.com',
       },
     },
     servers: [
@@ -18,9 +19,13 @@ const swaggerOptions = {
         url: 'http://localhost:3000',
         description: 'Development server',
       },
+      {
+        url: 'https://api.ecommerce.com',
+        description: 'Production server',
+      },
     ],
   },
-  apis: ['../routers/*.ts'],
+  apis: ['./src/docs/apis/*.yaml'],
 };
 
 export const setupSwagger = (app: Express) => {

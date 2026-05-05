@@ -1,0 +1,206 @@
+paths:
+  /v1/api/product:
+    get:
+      tags:
+        - Product
+      summary: Get All Products
+      description: Retrieve all published products with pagination and filters
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 1
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 60
+        - in: query
+          name: sort
+          schema:
+            type: string
+            default: ctime
+      responses:
+        "200":
+          description: Products retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  metadata:
+                    type: object
+
+    post:
+      tags:
+        - Product
+      summary: Create Product
+      description: Create a new product (requires authentication)
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - product_name
+                - product_thumb
+                - product_price
+                - product_type
+              properties:
+                product_name:
+                  type: string
+                product_description:
+                  type: string
+                product_thumb:
+                  type: string
+                product_price:
+                  type: number
+                product_type:
+                  type: string
+                  enum: [Electronics, Clothing, Furniture]
+      responses:
+        "201":
+          description: Product created successfully
+        "401":
+          description: Unauthorized
+
+  /v1/api/product/{product_id}:
+    get:
+      tags:
+        - Product
+      summary: Get Product Details
+      description: Retrieve a specific product by ID
+      parameters:
+        - in: path
+          name: product_id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Product details retrieved
+        "404":
+          description: Product not found
+
+  /v1/api/product/{productId}:
+    patch:
+      tags:
+        - Product
+      summary: Update Product
+      description: Update product information (requires authentication)
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: productId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                product_name:
+                  type: string
+                product_description:
+                  type: string
+                product_price:
+                  type: number
+      responses:
+        "200":
+          description: Product updated successfully
+        "401":
+          description: Unauthorized
+
+  /v1/api/product/search/{keySearch}:
+    get:
+      tags:
+        - Product
+      summary: Search Products
+      description: Search products by keyword
+      parameters:
+        - in: path
+          name: keySearch
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Search results
+
+  /v1/api/product/publish/{id}:
+    post:
+      tags:
+        - Product
+      summary: Publish Product
+      description: Publish a product to make it visible (requires authentication)
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Product published
+        "401":
+          description: Unauthorized
+
+  /v1/api/product/unpublish/{id}:
+    post:
+      tags:
+        - Product
+      summary: Unpublish Product
+      description: Unpublish a product (requires authentication)
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Product unpublished
+        "401":
+          description: Unauthorized
+
+  /v1/api/product/drafts/all:
+    get:
+      tags:
+        - Product
+      summary: Get Draft Products
+      description: Retrieve all draft products for the shop (requires authentication)
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: Draft products retrieved
+        "401":
+          description: Unauthorized
+
+  /v1/api/product/published/all:
+    get:
+      tags:
+        - Product
+      summary: Get Published Products
+      description: Retrieve all published products for the shop (requires authentication)
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: Published products retrieved
+        "401":
+          description: Unauthorized

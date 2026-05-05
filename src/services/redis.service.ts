@@ -4,7 +4,9 @@ import { createClient } from 'redis';
 const redisClient = createClient({});
 
 // Connect to Redis
-redisClient.connect().catch(console.error);
+redisClient.connect().catch((err) => {
+  console.warn('❗ Redis connection failed:', err.message);
+});
 
 export const acquireLock = async ({
   productId,
