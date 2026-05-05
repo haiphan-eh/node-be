@@ -2,10 +2,12 @@ import type { ErrorResponse } from '@/core/error.response.js';
 import { checkOverload } from '@/helpers/check.connect.js';
 import router from '@/routers/index.js';
 import compression from 'compression';
+import cors from 'cors';
 import express, { type NextFunction, type Response } from 'express';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import dbInstance from './dbs/init.mongodb.js';
+
 const app = express();
 
 /* Middleware */
@@ -13,6 +15,15 @@ app.use(express.json());
 app.use(morgan('dev'));
 app.use(helmet());
 app.use(compression());
+
+app.use(
+  cors({
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'x-request-id', 'cache-control'],
+    credentials: true,
+  }),
+);
 
 /* Routes */
 app.use(router);
