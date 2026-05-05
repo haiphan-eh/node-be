@@ -19,7 +19,7 @@ export const acquireLock = async ({
   const retryTimes = 10;
   const expireTime = 3000; // 3 seconds
   for (let i = 0; i < retryTimes; i++) {
-    const result = await setnxAsync(key, expireTime);
+    const result = await setnxAsync();
     console.log(' result:::', result);
     if (result === 1) {
       const isReservation = await InventoryService.reservationInventory({
@@ -28,7 +28,7 @@ export const acquireLock = async ({
         cartId,
       });
       if (isReservation.modifiedCount) {
-        await pexpire(key, expireTime);
+        await pexpire();
         return key;
       }
       return null;

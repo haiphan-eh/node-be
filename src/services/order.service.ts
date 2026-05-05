@@ -9,7 +9,6 @@
 */
 
 import { OrderModel, type OrderType } from '@/models/order.model.js';
-import type { FlattenMaps } from 'mongoose';
 
 export const createOrder = async ({
   order_checkout,

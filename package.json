@@ -7,7 +7,8 @@
     "pre-check": "biome check --write . && tsc --noEmitOnError",
     "fix": "biome check --fix --unsafe",
     "dev": "tsx watch --no-warnings --env-file=.env server.ts",
-    "build": "tsc && tsc-alias"
+    "build": "tsc && tsc-alias",
+    "start": "node dist/server.js"
   },
   "keywords": [],
   "author": "",

@@ -146,7 +146,7 @@ export const orderByUser = async ({
   return 'new order';
 };
 
-export const getOrdersByUser = async ({ userId }: { userId: number }) => {
+/* export const getOrdersByUser = async ({ userId }: { userId: number }) => {
   return OrderService.getOrdersByUser({ userId });
 };
 
@@ -161,3 +161,4 @@ export const cancelOneOrderByUser = async ({ userId }: { userId: number }) => {
 export const updateOrderStatusByShop = async ({ userId }: { userId: number }) => {
   return OrderService.getOrdersByUser({ userId });
 };
+ */
