@@ -1,19 +1,24 @@
 import { BadRequestError } from '@/core/error.response.js';
 import { CREATED, SuccessResponse } from '@/core/success.response.js';
+import { LoginRequestSchema, SignupRequestSchema } from '@/schemas/auth.js';
 import { AccessService } from '@/services/index.js';
 import type { Request, Response } from 'express';
 
 export const login = async (req: Request, res: Response) => {
+  // Validate request with Zod
+  const validatedData = await LoginRequestSchema.parseAsync(req.body);
   new SuccessResponse({
     message: 'Shop logged in successfully',
-    metadata: await AccessService.login(req.body),
+    metadata: await AccessService.login(validatedData),
   }).send(res);
 };
 
 export const signup = async (req: Request, res: Response) => {
+  // Validate request with Zod
+  const validatedData = await SignupRequestSchema.parseAsync(req.body);
   new CREATED({
     message: 'Shop created successfully',
-    metadata: await AccessService.signUp(req.body),
+    metadata: await AccessService.signUp(validatedData),
   }).send(res);
 };
 
