@@ -5,6 +5,8 @@ paths:
         - Auth
       summary: Shop Sign Up
       description: Create a new shop account
+      parameters:
+        - $ref: '#/components/parameters/ApiKeyHeader'
       requestBody:
         required: true
         content:
@@ -12,18 +14,18 @@ paths:
             schema:
               type: object
               required:
-                - shop_name
-                - shop_email
-                - shop_password
+                - name
+                - email
+                - password
               properties:
-                shop_name:
+                name:
                   type: string
                   example: My Shop
-                shop_email:
+                email:
                   type: string
                   format: email
                   example: shop@example.com
-                shop_password:
+                password:
                   type: string
                   format: password
                   example: SecurePassword123
@@ -61,6 +63,8 @@ paths:
         - Auth
       summary: Shop Login
       description: Authenticate shop and get access token
+      parameters:
+        - $ref: '#/components/parameters/ApiKeyHeader'
       requestBody:
         required: true
         content:
@@ -68,15 +72,21 @@ paths:
             schema:
               type: object
               required:
-                - shop_email
-                - shop_password
+                - email
+                - password
               properties:
-                shop_email:
+                email:
                   type: string
                   format: email
-                shop_password:
+                  example: shop@example.com
+                password:
                   type: string
                   format: password
+                  example: SecurePassword123
+                refreshToken:
+                  type: string
+                  nullable: true
+                  description: Optional refresh token for token rotation
       responses:
         "200":
           description: Login successful
@@ -100,8 +110,10 @@ paths:
         - Auth
       summary: Shop Logout
       description: Logout shop account
-      security:
-        - BearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/ApiKeyHeader'
+        - $ref: '#/components/parameters/ClientIdHeader'
+        - $ref: '#/components/parameters/AuthorizationHeader'
       responses:
         "200":
           description: Logout successful
@@ -114,8 +126,11 @@ paths:
         - Auth
       summary: Refresh Token
       description: Refresh access token using refresh token
-      security:
-        - BearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/ApiKeyHeader'
+        - $ref: '#/components/parameters/ClientIdHeader'
+        - $ref: '#/components/parameters/AuthorizationHeader'
+        - $ref: '#/components/parameters/RefreshTokenHeader'
       responses:
         "200":
           description: Token refreshed successfully

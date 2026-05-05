@@ -1,4 +1,39 @@
 components:
+  parameters:
+    ApiKeyHeader:
+      name: x-api-key
+      in: header
+      required: true
+      description: API Key for accessing the API
+      schema:
+        type: string
+        example: "your-api-key-here"
+
+    ClientIdHeader:
+      name: x-client-id
+      in: header
+      required: false
+      description: Client/Shop ID
+      schema:
+        type: string
+
+    AuthorizationHeader:
+      name: authorization
+      in: header
+      required: false
+      description: Bearer token (JWT)
+      schema:
+        type: string
+        example: "your-access-token"
+
+    RefreshTokenHeader:
+      name: x-refresh-token
+      in: header
+      required: false
+      description: Refresh token for token renewal
+      schema:
+        type: string
+
   schemas:
     Error:
       type: object

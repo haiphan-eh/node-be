@@ -1,4 +1,20 @@
 paths:
+  /v1/api/product/search/{keySearch}:
+    get:
+      tags:
+        - Product
+      summary: Search Products
+      description: Search products by keyword
+      parameters:
+        - in: path
+          name: keySearch
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Search results
+
   /v1/api/product:
     get:
       tags:
@@ -39,8 +55,9 @@ paths:
         - Product
       summary: Create Product
       description: Create a new product (requires authentication)
-      security:
-        - BearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/ApiKeyHeader'
+        - $ref: '#/components/parameters/AuthorizationHeader'
       requestBody:
         required: true
         content:
@@ -70,6 +87,36 @@ paths:
         "401":
           description: Unauthorized
 
+  /v1/api/product/drafts/all:
+    get:
+      tags:
+        - Product
+      summary: Get Draft Products
+      description: Retrieve all draft products for the shop (requires authentication)
+      parameters:
+        - $ref: '#/components/parameters/ApiKeyHeader'
+        - $ref: '#/components/parameters/AuthorizationHeader'
+      responses:
+        "200":
+          description: Draft products retrieved
+        "401":
+          description: Unauthorized
+
+  /v1/api/product/published/all:
+    get:
+      tags:
+        - Product
+      summary: Get Published Products
+      description: Retrieve all published products for the shop (requires authentication)
+      parameters:
+        - $ref: '#/components/parameters/ApiKeyHeader'
+        - $ref: '#/components/parameters/AuthorizationHeader'
+      responses:
+        "200":
+          description: Published products retrieved
+        "401":
+          description: Unauthorized
+
   /v1/api/product/{product_id}:
     get:
       tags:
@@ -94,14 +141,14 @@ paths:
         - Product
       summary: Update Product
       description: Update product information (requires authentication)
-      security:
-        - BearerAuth: []
       parameters:
         - in: path
           name: productId
           required: true
           schema:
             type: string
+        - $ref: '#/components/parameters/ApiKeyHeader'
+        - $ref: '#/components/parameters/AuthorizationHeader'
       requestBody:
         required: true
         content:
@@ -121,36 +168,20 @@ paths:
         "401":
           description: Unauthorized
 
-  /v1/api/product/search/{keySearch}:
-    get:
-      tags:
-        - Product
-      summary: Search Products
-      description: Search products by keyword
-      parameters:
-        - in: path
-          name: keySearch
-          required: true
-          schema:
-            type: string
-      responses:
-        "200":
-          description: Search results
-
   /v1/api/product/publish/{id}:
     post:
       tags:
         - Product
       summary: Publish Product
       description: Publish a product to make it visible (requires authentication)
-      security:
-        - BearerAuth: []
       parameters:
         - in: path
           name: id
           required: true
           schema:
             type: string
+        - $ref: '#/components/parameters/ApiKeyHeader'
+        - $ref: '#/components/parameters/AuthorizationHeader'
       responses:
         "200":
           description: Product published
@@ -163,41 +194,19 @@ paths:
         - Product
       summary: Unpublish Product
       description: Unpublish a product (requires authentication)
-      security:
-        - BearerAuth: []
       parameters:
         - in: path
           name: id
           required: true
           schema:
             type: string
+        - $ref: '#/components/parameters/ApiKeyHeader'
+        - $ref: '#/components/parameters/AuthorizationHeader'
       responses:
         "200":
           description: Product unpublished
         "401":
           description: Unauthorized
-
-  /v1/api/product/drafts/all:
-    get:
-      tags:
-        - Product
-      summary: Get Draft Products
-      description: Retrieve all draft products for the shop (requires authentication)
-      security:
-        - BearerAuth: []
-      responses:
-        "200":
-          description: Draft products retrieved
-        "401":
-          description: Unauthorized
-
-  /v1/api/product/published/all:
-    get:
-      tags:
-        - Product
-      summary: Get Published Products
-      description: Retrieve all published products for the shop (requires authentication)
-      security:
         - BearerAuth: []
       responses:
         "200":

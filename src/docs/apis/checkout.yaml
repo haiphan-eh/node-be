@@ -5,8 +5,9 @@ paths:
         - Checkout
       summary: Review Checkout
       description: Review order before final checkout, including discount and inventory checks
-      security:
-        - BearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/ApiKeyHeader'
+        - $ref: '#/components/parameters/AuthorizationHeader'
       requestBody:
         required: true
         content:

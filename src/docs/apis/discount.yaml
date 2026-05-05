@@ -68,9 +68,9 @@ paths:
         - Discount
       summary: Get Shop Discount Codes
       description: Retrieve all discount codes created by the shop (requires authentication)
-      security:
-        - BearerAuth: []
       parameters:
+        - $ref: '#/components/parameters/ApiKeyHeader'
+        - $ref: '#/components/parameters/AuthorizationHeader'
         - in: query
           name: page
           schema:
@@ -92,8 +92,9 @@ paths:
         - Discount
       summary: Create Discount Code
       description: Create a new discount code (requires authentication)
-      security:
-        - BearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/ApiKeyHeader'
+        - $ref: '#/components/parameters/AuthorizationHeader'
       requestBody:
         required: true
         content:
