@@ -7,6 +7,7 @@ import cors from 'cors';
 import express, { type NextFunction, type Response } from 'express';
 import helmet from 'helmet';
 import morgan from 'morgan';
+import { ZodError } from 'zod';
 import dbInstance from './dbs/init.mongodb.js';
 
 const app = express();
@@ -44,9 +45,15 @@ dbInstance;
 checkOverload();
 
 /* Handle Errors */
-app.use((error: ErrorResponse, _: unknown, res: Response, _next: NextFunction) => {
-  const statusCode = error.statusCode || 500;
-  const errorResponse: {
+app.use((error: unknown, _: unknown, res: Response, _next: NextFunction) => {
+  if (error instanceof ZodError) {
+    const message = error.errors.map((e) => `${e.path.join('.')}: ${e.message}`).join('; ');
+    return res.status(400).json({ status: 'error', code: 400, message });
+  }
+
+  const err = error as ErrorResponse;
+  const statusCode = err.statusCode || 500;
+  const body: {
     status: string;
     code: number;
     message: string;
@@ -54,13 +61,13 @@ app.use((error: ErrorResponse, _: unknown, res: Response, _next: NextFunction) =
   } = {
     status: 'error',
     code: statusCode,
-    message: error.message || 'Internal Server Error',
+    message: err.message || 'Internal Server Error',
   };
 
   if (process.env.NODE_ENV === 'development') {
-    errorResponse.stack = error.stack;
+    body.stack = err.stack;
   }
 
-  return res.status(statusCode).json(errorResponse);
+  return res.status(statusCode).json(body);
 });
 export default app;

@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(rtk tsc *)",
+      "Bash(pnpm remove *)",
+      "Bash(pnpm add *)",
+      "Bash(pnpm generate:spec)",
+      "Bash(pnpm generate:types)"
+    ]
+  }
+}

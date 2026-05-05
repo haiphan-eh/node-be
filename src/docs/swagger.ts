@@ -16,12 +16,12 @@ const swaggerOptions = {
     },
     servers: [
       {
-        url: 'http://localhost:3000',
-        description: 'Development server',
-      },
-      {
         url: 'https://ecommerce-be-0yom.onrender.com',
         description: 'Production server',
+      },
+      {
+        url: 'http://localhost:3055',
+        description: 'Development server',
       },
     ],
   },
