@@ -16,10 +16,6 @@ export const LoginRequestSchema = z.object({
   refreshToken: z.string().optional().openapi({ description: 'Optional refresh token' }),
 });
 
-export const LogoutRequestSchema = z.object({});
-
-export const RefreshTokenRequestSchema = z.object({});
-
 // Response Schemas
 export const ShopSchema = z.object({
   _id: z.string(),
