@@ -15,6 +15,7 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
+    "@types/swagger-jsdoc": "^6.0.4",
     "compression": "^1.8.1",
     "cors": "^2.8.6",
     "express": "^5.2.1",
@@ -25,6 +26,8 @@
     "morgan": "^1.10.1",
     "redis": "^5.12.1",
     "slugify": "^1.6.9",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
     "typescript": "^6.0.3"
   },
   "devDependencies": {
@@ -36,7 +39,7 @@
     "@types/lodash": "^4.17.24",
     "@types/morgan": "^1.9.10",
     "@types/node": "^25.6.0",
-    "@types/redis": "^4.0.11",
+    "@types/swagger-ui-express": "^4.1.8",
     "tsc-alias": "^1.8.10",
     "tsx": "^4.21.0"
   }

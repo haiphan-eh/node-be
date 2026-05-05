@@ -1,4 +1,5 @@
 import type { ErrorResponse } from '@/core/error.response.js';
+import { setupSwagger } from '@/docs/swagger.js';
 import { checkOverload } from '@/helpers/check.connect.js';
 import router from '@/routers/index.js';
 import compression from 'compression';
@@ -24,6 +25,9 @@ app.use(
     credentials: true,
   }),
 );
+
+/* Swagger */
+setupSwagger(app);
 
 /* Routes */
 app.use(router);
