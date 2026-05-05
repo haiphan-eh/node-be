@@ -21,7 +21,15 @@ app.use(
   cors({
     origin: '*',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'x-request-id', 'cache-control'],
+    allowedHeaders: [
+      'Content-Type',
+      'Authorization',
+      'x-api-key',
+      'x-client-id',
+      'x-refresh-token',
+      'x-request-id',
+      'cache-control',
+    ],
     credentials: true,
   }),
 );

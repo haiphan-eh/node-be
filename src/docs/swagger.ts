@@ -20,12 +20,12 @@ const swaggerOptions = {
         description: 'Development server',
       },
       {
-        url: 'https://api.ecommerce.com',
+        url: 'https://ecommerce-be-0yom.onrender.com',
         description: 'Production server',
       },
     ],
   },
-  apis: ['./src/docs/apis/*.yaml'],
+  apis: ['./src/docs/schemas/*.yaml', './src/docs/apis/*.yaml'],
 };
 
 export const setupSwagger = (app: Express) => {
