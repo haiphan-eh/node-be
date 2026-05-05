@@ -63,6 +63,9 @@ importers:
       '@types/morgan':
         specifier: ^1.9.10
         version: 1.9.10
+      '@types/node':
+        specifier: ^25.6.0
+        version: 25.6.0
       tsc-alias:
         specifier: ^1.8.10
         version: 1.8.17
