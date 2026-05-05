@@ -10,6 +10,11 @@ import productRoutes from './product/index.js';
 
 const router = express.Router();
 
+/* Health check */
+router.get('/', (_req, res) => {
+  res.json({ message: 'hello world' });
+});
+
 /* Middlewares */
 router.use(apiKey);
 router.use(permission('0000'));
