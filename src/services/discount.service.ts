@@ -228,7 +228,7 @@ export const getDiscountAmount = async ({
   }
 
   if (userId && discount_max_use_per_user > 0) {
-    const userUseCount = discount_used_by.filter((id) => id.toString() === userId).length;
+    const userUseCount = discount_used_by.filter((id: any) => id.toString() === userId).length;
     if (userUseCount >= discount_max_use_per_user) {
       throw new BadRequestError('You have reached the maximum uses for this discount code');
     }

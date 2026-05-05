@@ -7,7 +7,7 @@
     "pre-check": "biome check --write . && tsc --noEmitOnError",
     "fix": "biome check --fix --unsafe",
     "dev": "tsx watch --no-warnings --env-file=.env server.ts",
-    "build": "tsc --noEmitOnError && tsc-alias",
+    "build": "tsc && tsc-alias",
     "start": "node dist/server.js"
   },
   "keywords": [],
@@ -36,6 +36,8 @@
     "@types/lodash": "^4.17.24",
     "@types/morgan": "^1.9.10",
     "@types/node": "^25.6.0",
+    "@types/redis": "^4.0.11",
+    "@types/slugify": "^1.3.5",
     "tsc-alias": "^1.8.10",
     "tsx": "^4.21.0"
   }

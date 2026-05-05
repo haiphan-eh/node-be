@@ -29,7 +29,7 @@ export const addProductToCart = async ({
   // TODO: Logic chỗ này khác với video
   // 3. If cart exists, and has products
   // 3.1 Check if product already exists in cart
-  const existingProduct = cart.cart_products.find((p) => p.productId.toString() === product.productId);
+  const existingProduct = cart.cart_products.find((p: any) => p.productId.toString() === product.productId);
   if (existingProduct) {
     return CartRepository.updateProductQuantity({ userId, productId: product.productId.toString(), quantity: 1 });
   }

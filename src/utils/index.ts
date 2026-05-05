@@ -11,7 +11,7 @@ export const getInfoData = <T, K extends keyof T>({
 };
 
 export const getSelectData = <T extends string>(select: T[] = [], value = 1) => {
-  return Object.fromEntries(select.map((el) => [el, value]));
+  return Object.fromEntries(select.map((el: T) => [el, value])) as Record<T, number>;
 };
 
 export const updateNestedObjectParser = (obj: any): any => {
